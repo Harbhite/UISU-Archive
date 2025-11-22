@@ -195,7 +195,7 @@ const App: React.FC = () => {
                 className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 cursor-pointer" 
                 onClick={() => setView('home')}
             >
-                <img src="/uisu-logo.png" alt="Logo" className="w-8 h-8 object-contain" />
+                <img src="/uisu-logo.jpg" alt="Logo" className="w-8 h-8 object-contain" />
                 <span className="font-serif font-bold text-xl tracking-tight">UISU</span>
             </motion.div>
 
