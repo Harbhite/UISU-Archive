@@ -26,7 +26,7 @@ const Marquee = () => {
       <div className="animate-marquee whitespace-nowrap flex gap-8 items-center font-bold text-xs tracking-[0.2em] uppercase">
         <span>First and Best</span> <Star size={10} fill="currentColor" />
         <span>The Greatest Uites</span> <Star size={10} fill="currentColor" />
-        <span>Intellectual Capital</span> <Star size={10} fill="currentColor" />
+        <span>Father of Intellectual Unionism</span> <Star size={10} fill="currentColor" />
         <span>Est. 1948</span> <Star size={10} fill="currentColor" />
         <span>Aluta Continua</span> <Star size={10} fill="currentColor" />
         <span>Victoria Ascerta</span> <Star size={10} fill="currentColor" />
@@ -195,8 +195,8 @@ const App: React.FC = () => {
                 className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 cursor-pointer" 
                 onClick={() => setView('home')}
             >
-                <img src="/uisu-logo.jpg" alt="Logo" className="w-8 h-8 object-contain" />
-                <span className="font-serif font-bold text-xl tracking-tight">UISU</span>
+                <img src="/uisu-logo.jpg.png" alt="Logo" className="w-8 h-8 object-contain" />
+                <span className="font-serif font-bold text-xl tracking-tight">University of Ibadan Students' Union</span>
             </motion.div>
 
             {/* Right: Action */}
