@@ -37,7 +37,7 @@ export const DNAHelix = (props: any) => {
           </mesh>
           {/* Connecting rod */}
           <group rotation={[0, i * 0.5, 0]} position={[0, 0, 0]}>
-            <mesh rotation={[Math.PI / 2, 0, 0]}>
+            <mesh rotation={[0, 0, Math.PI / 2]}>
               <cylinderGeometry args={[0.02, 0.02, 3, 8]} />
               <meshStandardMaterial color="#ccc" opacity={0.3} transparent />
             </mesh>
