@@ -107,12 +107,14 @@ export const DocumentLibrary: React.FC<DocumentLibraryProps> = ({ onBack }) => {
                         <span>Back to Home</span>
                     </button>
 
-                     <button
+                     <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         onClick={() => setIsUploadModalOpen(true)}
                         className="flex items-center gap-2 px-6 py-3 bg-ui-blue text-white rounded-full shadow-lg hover:bg-nobel-gold hover:text-slate-900 transition-all text-xs font-bold uppercase tracking-widest"
                     >
                         <Upload size={14} /> Upload
-                    </button>
+                    </motion.button>
                 </div>
 
                 <div className="mb-20">
@@ -153,8 +155,16 @@ export const DocumentLibrary: React.FC<DocumentLibraryProps> = ({ onBack }) => {
                                     <button
                                         key={decade}
                                         onClick={() => setSelectedDecade(decade)}
-                                        className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${selectedDecade === decade ? 'bg-ui-blue text-white' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'}`}
+                                        className={`px-3 py-1 text-xs font-bold rounded-full transition-all relative z-10 ${selectedDecade === decade ? 'text-white' : 'text-slate-600 hover:bg-slate-200'}`}
                                     >
+                                        {/* MICRO-ANIMATION 8: Sliding Filter Background */}
+                                        {selectedDecade === decade && (
+                                            <motion.span 
+                                                layoutId="activeDecade"
+                                                className="absolute inset-0 bg-ui-blue rounded-full -z-10"
+                                                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                            />
+                                        )}
                                         {decade}
                                     </button>
                                 ))}
@@ -195,6 +205,7 @@ export const DocumentLibrary: React.FC<DocumentLibraryProps> = ({ onBack }) => {
                                 filteredDocs.map((doc) => (
                                     <motion.div 
                                         key={doc.id}
+                                        layout
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         className="group bg-white p-8 border border-slate-100 hover:border-slate-300 hover:shadow-xl transition-all duration-300 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center"

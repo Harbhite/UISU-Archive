@@ -12,6 +12,21 @@ interface GovernanceProps {
   onBack: () => void;
 }
 
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1
+        }
+    }
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+};
+
 export const GovernancePage: React.FC<GovernanceProps> = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState<'cec' | 'src' | 'judiciary'>('cec');
 
@@ -86,9 +101,12 @@ export const GovernancePage: React.FC<GovernanceProps> = ({ onBack }) => {
         <div className="min-h-[500px]">
             {activeTab === 'cec' && (
                 <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="hidden"
                 >
+                    {/* MICRO-ANIMATION 7: Staggered Grid Entrance */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         <RoleCard 
                             title="The President" 
@@ -137,11 +155,12 @@ export const GovernancePage: React.FC<GovernanceProps> = ({ onBack }) => {
 
             {activeTab === 'src' && (
                 <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
                     className="space-y-12"
                 >
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 bg-white p-10 rounded-sm border border-slate-200 shadow-sm relative overflow-hidden">
+                    <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-12 bg-white p-10 rounded-sm border border-slate-200 shadow-sm relative overflow-hidden">
                         <div className="lg:col-span-2 relative z-10">
                             <h3 className="font-serif text-4xl md:text-5xl mb-6 text-ui-blue">The Students' Representative Council</h3>
                             <p className="text-xl text-slate-600 leading-relaxed mb-8 font-light">
@@ -170,14 +189,14 @@ export const GovernancePage: React.FC<GovernanceProps> = ({ onBack }) => {
                         <div className="relative z-10 flex items-center justify-center">
                              <Gavel size={120} className="text-slate-200" />
                         </div>
-                    </div>
+                    </motion.div>
                     
                     <div>
-                         <div className="flex items-center gap-4 mb-8">
+                         <motion.div variants={itemVariants} className="flex items-center gap-4 mb-8">
                              <div className="h-px flex-1 bg-slate-300"></div>
                              <span className="font-serif text-2xl text-ui-blue">Principal Officers</span>
                              <div className="h-px flex-1 bg-slate-300"></div>
-                         </div>
+                         </motion.div>
 
                          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <RoleCard 
@@ -203,11 +222,12 @@ export const GovernancePage: React.FC<GovernanceProps> = ({ onBack }) => {
 
             {activeTab === 'judiciary' && (
                 <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
                     className="grid grid-cols-1 lg:grid-cols-2 gap-12"
                 >
-                     <div className="bg-ui-blue text-white p-10 rounded-sm relative overflow-hidden flex flex-col justify-between min-h-[400px]">
+                     <motion.div variants={itemVariants} className="bg-ui-blue text-white p-10 rounded-sm relative overflow-hidden flex flex-col justify-between min-h-[400px]">
                          <div className="relative z-10">
                             <div className="inline-block px-3 py-1 border border-white/20 rounded-full text-xs font-bold uppercase tracking-widest mb-6 text-nobel-gold">
                                 The Third Arm
@@ -225,21 +245,21 @@ export const GovernancePage: React.FC<GovernanceProps> = ({ onBack }) => {
                          
                          {/* BG Decoration */}
                          <Scale size={300} className="absolute -bottom-10 -right-10 text-white/5 rotate-12" />
-                     </div>
+                     </motion.div>
 
                      <div className="space-y-6">
-                         <div className="p-8 bg-white border border-slate-200 hover:border-nobel-gold transition-colors group">
+                         <motion.div variants={itemVariants} className="p-8 bg-white border border-slate-200 hover:border-nobel-gold transition-colors group cursor-default">
                              <h4 className="font-serif text-2xl mb-2 text-ui-blue group-hover:text-nobel-gold transition-colors">The Chief Justice</h4>
                              <p className="text-slate-600">Head of the Judicial Council. Appointed by the President on recommendation of the SRC.</p>
-                         </div>
-                         <div className="p-8 bg-white border border-slate-200 hover:border-nobel-gold transition-colors group">
+                         </motion.div>
+                         <motion.div variants={itemVariants} className="p-8 bg-white border border-slate-200 hover:border-nobel-gold transition-colors group cursor-default">
                              <h4 className="font-serif text-2xl mb-2 text-ui-blue group-hover:text-nobel-gold transition-colors">Judges</h4>
                              <p className="text-slate-600">Representatives from various halls of residence who sit on the council to ensure fair hearing.</p>
-                         </div>
-                         <div className="p-8 bg-white border border-slate-200 hover:border-nobel-gold transition-colors group">
+                         </motion.div>
+                         <motion.div variants={itemVariants} className="p-8 bg-white border border-slate-200 hover:border-nobel-gold transition-colors group cursor-default">
                              <h4 className="font-serif text-2xl mb-2 text-ui-blue group-hover:text-nobel-gold transition-colors">The Registrar</h4>
                              <p className="text-slate-600">Administrative head of the court. Manages case files and court schedules.</p>
-                         </div>
+                         </motion.div>
                      </div>
                 </motion.div>
             )}
@@ -250,7 +270,10 @@ export const GovernancePage: React.FC<GovernanceProps> = ({ onBack }) => {
 };
 
 const RoleCard = ({ title, desc, icon, isDark = false }: { title: string, desc: string, icon: React.ReactNode, isDark?: boolean }) => (
-    <div className={`p-8 border transition-all duration-300 group relative overflow-hidden ${isDark ? "bg-ui-blue border-ui-blue text-white" : "bg-white border-slate-200 hover:border-nobel-gold text-slate-900"}`}>
+    <motion.div 
+        variants={itemVariants}
+        className={`p-8 border transition-all duration-300 group relative overflow-hidden ${isDark ? "bg-ui-blue border-ui-blue text-white" : "bg-white border-slate-200 hover:border-nobel-gold text-slate-900"}`}
+    >
         {/* Hover Line */}
         <div className={`absolute top-0 left-0 w-full h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left ${isDark ? "bg-nobel-gold" : "bg-nobel-gold"}`}></div>
         
@@ -259,5 +282,5 @@ const RoleCard = ({ title, desc, icon, isDark = false }: { title: string, desc: 
         </div>
         <h3 className="font-serif text-3xl mb-4 leading-none">{title}</h3>
         <p className={`text-sm leading-relaxed ${isDark ? "text-slate-400" : "text-slate-500"}`}>{desc}</p>
-    </div>
+    </motion.div>
 );

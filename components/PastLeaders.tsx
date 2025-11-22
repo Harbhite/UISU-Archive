@@ -140,6 +140,7 @@ const administrations: Administration[] = [
 export const PastLeadersPage: React.FC<PastLeadersProps> = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const filteredAdmins = administrations.filter(admin => 
     admin.president.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -176,16 +177,23 @@ export const PastLeadersPage: React.FC<PastLeadersProps> = ({ onBack }) => {
                 </h1>
             </div>
             
-            <div className="relative w-full md:w-96">
+            {/* MICRO-ANIMATION 10: Search Input Focus Animation */}
+            <motion.div 
+                className="relative w-full md:w-96"
+                animate={{ scale: isSearchFocused ? 1.05 : 1 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
                 <input 
                     type="text" 
                     placeholder="Search leaders or years..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-4 pr-12 py-4 bg-white border-b-2 border-slate-200 focus:border-nobel-gold focus:outline-none text-slate-900 placeholder-slate-400 text-lg font-serif transition-colors"
+                    onFocus={() => setIsSearchFocused(true)}
+                    onBlur={() => setIsSearchFocused(false)}
+                    className="w-full pl-4 pr-12 py-4 bg-white border-b-2 border-slate-200 focus:border-nobel-gold focus:outline-none text-slate-900 placeholder-slate-400 text-lg font-serif transition-colors shadow-sm focus:shadow-md"
                 />
-                <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-            </div>
+                <Search className={`absolute right-4 top-1/2 -translate-y-1/2 transition-colors ${isSearchFocused ? 'text-nobel-gold' : 'text-slate-400'}`} size={20} />
+            </motion.div>
         </div>
 
         <div className="flex flex-col gap-6">
@@ -275,8 +283,11 @@ const StatusBadge = ({ status }: { status: string }) => {
     if (status === 'Impeached') styles = "bg-orange-50 text-orange-700 border-orange-100";
 
     return (
-        <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border ${styles}`}>
+        <motion.span 
+            whileHover={{ scale: 1.05 }}
+            className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border ${styles} inline-block`}
+        >
             {status}
-        </span>
+        </motion.span>
     )
 }

@@ -13,14 +13,16 @@ import { GovernancePage } from './components/Governance';
 import { PastLeadersPage } from './components/PastLeaders';
 import { DocumentLibrary } from './components/DocumentLibrary';
 import { AnnouncementsPage } from './components/Announcements';
-import { Menu, X, BookOpen, ArrowRight, Library, Star, MapPin, Scale, Megaphone } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { TriviaSection } from './components/Trivia';
+import { Menu, X, BookOpen, ArrowRight, Library, Star, MapPin, Scale, Megaphone, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // --- SUB-COMPONENTS FOR THE NEW DESIGN ---
 
 const Marquee = () => {
   return (
-    <div className="bg-nobel-gold text-ui-blue py-2 overflow-hidden relative z-50">
+    <div className="bg-nobel-gold text-ui-blue py-2 overflow-hidden relative z-50 cursor-default">
+      {/* MICRO-ANIMATION 1: Pause marquee on hover (implemented via CSS in index.css) */}
       <div className="animate-marquee whitespace-nowrap flex gap-8 items-center font-bold text-xs tracking-[0.2em] uppercase">
         <span>First and Best</span> <Star size={10} fill="currentColor" />
         <span>The Greatest Uites</span> <Star size={10} fill="currentColor" />
@@ -78,16 +80,39 @@ const TiltedCard = ({ title, subtitle, icon: Icon, color, onClick, delay }: any)
 
 const LeaderCard = ({ name, role, delay }: { name: string, role: string, delay: string }) => {
   return (
-    <div className="flex flex-col group items-center p-8 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 w-full max-w-xs hover:border-nobel-gold/50" style={{ animationDelay: delay }}>
-      <div className="w-16 h-16 rounded-full bg-slate-50 mb-4 flex items-center justify-center text-2xl font-serif text-nobel-gold font-bold border border-slate-100">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: parseFloat(delay) }}
+      whileHover={{ y: -10 }}
+      className="flex flex-col group items-center p-8 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 w-full max-w-xs hover:border-nobel-gold/50 cursor-pointer"
+    >
+      <motion.div 
+        whileHover={{ scale: 1.1, rotate: 5 }}
+        className="w-16 h-16 rounded-full bg-slate-50 mb-4 flex items-center justify-center text-2xl font-serif text-nobel-gold font-bold border border-slate-100 group-hover:border-nobel-gold transition-colors"
+      >
         {name.charAt(0)}
-      </div>
+      </motion.div>
       <h3 className="font-serif text-xl text-ui-blue text-center mb-2">{name}</h3>
-      <div className="w-8 h-0.5 bg-nobel-gold mb-3 opacity-60"></div>
+      <div className="w-8 h-0.5 bg-nobel-gold mb-3 opacity-60 group-hover:w-16 transition-all duration-300"></div>
       <p className="text-xs text-slate-500 font-bold uppercase tracking-widest text-center leading-relaxed">{role}</p>
-    </div>
+    </motion.div>
   );
 };
+
+// Micro-animation helper component
+const RevealHeader = ({ children, className }: { children?: React.ReactNode, className?: string }) => (
+  <motion.h2 
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-50px" }}
+    transition={{ duration: 0.6, ease: "easeOut" }}
+    className={className}
+  >
+    {children}
+  </motion.h2>
+);
 
 // --- MAIN APP COMPONENT ---
 
@@ -142,25 +167,51 @@ const App: React.FC = () => {
       <nav className="fixed top-14 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl z-40">
         <div className="bg-ui-blue/95 backdrop-blur-md text-white rounded-full px-6 py-3 flex justify-between items-center shadow-2xl border border-white/10">
             {/* Left: Menu Trigger */}
-            <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider hover:text-nobel-gold transition-colors">
-                {menuOpen ? <X size={18}/> : <Menu size={18}/>}
+            <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setMenuOpen(!menuOpen)} 
+                className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider hover:text-nobel-gold transition-colors"
+            >
+                <AnimatePresence mode="wait">
+                    {menuOpen ? (
+                        <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+                             <X size={18}/>
+                        </motion.div>
+                    ) : (
+                        <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
+                             <Menu size={18}/>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
                 <span className="hidden md:inline">Menu</span>
-            </button>
+            </motion.button>
 
             {/* Center: Logo */}
-            <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 cursor-pointer" onClick={() => setView('home')}>
+            {/* MICRO-ANIMATION 2: Logo hover effect */}
+            <motion.div 
+                whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
+                transition={{ duration: 0.5 }}
+                className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 cursor-pointer" 
+                onClick={() => setView('home')}
+            >
                 <img src="/uisu-logo.png" alt="Logo" className="w-8 h-8 object-contain" />
                 <span className="font-serif font-bold text-xl tracking-tight">UISU</span>
-            </div>
+            </motion.div>
 
             {/* Right: Action */}
             <div className="flex items-center gap-4">
                 <button onClick={() => setView('announcements')} className="hidden md:flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-nobel-gold transition-colors">
                     <Megaphone size={14} /> News
                 </button>
-                <button onClick={scrollToSection('introduction')} className="bg-nobel-gold text-ui-blue px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white transition-colors">
+                <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={scrollToSection('introduction')} 
+                    className="bg-nobel-gold text-ui-blue px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white transition-colors"
+                >
                     Enter
-                </button>
+                </motion.button>
             </div>
         </div>
       </nav>
@@ -275,6 +326,18 @@ const App: React.FC = () => {
                 />
 
             </div>
+
+            {/* MICRO-ANIMATION 3: Scroll Down Indicator */}
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, y: [0, 10, 0] }}
+                transition={{ delay: 2, y: { duration: 1.5, repeat: Infinity } }}
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 text-slate-400 flex flex-col items-center gap-2 cursor-pointer"
+                onClick={scrollToSection('introduction')}
+            >
+                <span className="text-[10px] uppercase tracking-widest font-bold">Scroll</span>
+                <ChevronDown size={20} />
+            </motion.div>
         </div>
       </header>
 
@@ -287,9 +350,10 @@ const App: React.FC = () => {
           <div className="container mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-12 items-start relative z-10">
             <div className="md:col-span-5">
               <div className="inline-block mb-3 px-3 py-1 bg-ui-blue/10 text-ui-blue text-xs font-bold tracking-widest uppercase rounded-full">About Us</div>
-              <h2 className="font-serif text-5xl md:text-6xl mb-6 leading-tight text-ui-blue">
+              {/* MICRO-ANIMATION 4: Section Header Reveal */}
+              <RevealHeader className="font-serif text-5xl md:text-6xl mb-6 leading-tight text-ui-blue">
                 First and <br/><span className="italic text-nobel-gold">Best.</span>
-              </h2>
+              </RevealHeader>
               <p className="text-lg text-slate-500 font-medium">The Intellectual Capital of the Nation.</p>
             </div>
             <div className="md:col-span-7 text-xl text-slate-800 leading-relaxed space-y-6 font-light">
@@ -313,14 +377,19 @@ const App: React.FC = () => {
             <div className="container mx-auto px-6">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
                     <div className="max-w-2xl">
-                        <h2 className="font-serif text-5xl text-ui-blue mb-6">The Aluta Spirit</h2>
+                        <RevealHeader className="font-serif text-5xl text-ui-blue mb-6">The Aluta Spirit</RevealHeader>
                         <p className="text-lg text-slate-600 leading-relaxed">
                            The history of the Union is written in the ink of intellectualism and the sweat of struggle. Trace the defining moments that shaped the Union.
                         </p>
                     </div>
-                    <button onClick={() => setView('history')} className="shrink-0 px-6 py-3 bg-slate-50 border border-slate-300 rounded-full text-sm font-bold uppercase tracking-wider hover:bg-ui-blue hover:text-white transition-all shadow-sm">
+                    <motion.button 
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setView('history')} 
+                        className="shrink-0 px-6 py-3 bg-slate-50 border border-slate-300 rounded-full text-sm font-bold uppercase tracking-wider hover:bg-ui-blue hover:text-white transition-all shadow-sm"
+                    >
                         View All Leaders
-                    </button>
+                    </motion.button>
                 </div>
                 <TimelineDiagram />
             </div>
@@ -339,7 +408,7 @@ const App: React.FC = () => {
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-nobel-gold text-xs font-bold tracking-widest uppercase rounded-full mb-6 border border-white/10">
                             GOVERNANCE
                         </div>
-                        <h2 className="font-serif text-5xl mb-6 text-white">Union Structure</h2>
+                        <RevealHeader className="font-serif text-5xl mb-6 text-white">Union Structure</RevealHeader>
                         <p className="text-xl text-slate-300 mb-6 leading-relaxed font-light">
                             Modeled after the Federal Republic. A complete separation of powers ensuring accountability.
                         </p>
@@ -361,7 +430,7 @@ const App: React.FC = () => {
         <section id="halls" className="py-24 bg-slate-50">
           <div className="container mx-auto px-6">
              <div className="text-center mb-16">
-                <h2 className="font-serif text-5xl mb-4 text-ui-blue">The Republics</h2>
+                <RevealHeader className="font-serif text-5xl mb-4 text-ui-blue">The Republics</RevealHeader>
                 <p className="text-lg text-slate-500 uppercase tracking-widest font-bold">Halls of Residence</p>
              </div>
              
@@ -381,6 +450,9 @@ const App: React.FC = () => {
             </div>
         </section>
 
+        {/* New Trivia Section */}
+        <TriviaSection />
+
         {/* Culture / Tower */}
         <section className="py-24 bg-slate-50 border-t border-slate-200">
              <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-12">
@@ -392,7 +464,7 @@ const App: React.FC = () => {
                     </div>
                 </div>
                 <div className="md:col-span-7 flex flex-col justify-center">
-                    <h2 className="font-serif text-5xl mb-8 text-ui-blue">Campus Culture</h2>
+                    <RevealHeader className="font-serif text-5xl mb-8 text-ui-blue">Campus Culture</RevealHeader>
                     <p className="text-xl text-slate-600 mb-8 leading-relaxed font-light">
                         Life as a Uite is unique. From the gyration at the SUB to the quiet study sessions at Kenneth Dike Library. The halls—Mellamby, Tedder, Kuti, Sultan Bello, Independence, Zik, Queens, Idia, Awo—are nations with their own rich traditions.
                     </p>
@@ -410,7 +482,7 @@ const App: React.FC = () => {
         {/* Leaders / Footer CTA */}
         <section className="py-24 bg-white">
            <div className="container mx-auto px-6 text-center">
-                <h2 className="font-serif text-4xl md:text-5xl mb-12 text-ui-blue">Notable Figures</h2>
+                <RevealHeader className="font-serif text-4xl md:text-5xl mb-12 text-ui-blue">Notable Figures</RevealHeader>
                 
                 <div className="flex flex-col md:flex-row gap-8 justify-center items-center flex-wrap mb-12">
                     <LeaderCard name="Kunle Adepeju" role="The Martyr (1971)" delay="0s" />
@@ -418,12 +490,14 @@ const App: React.FC = () => {
                     <LeaderCard name="Bolaji Aweda" role="Union President (2024)" delay="0.2s" />
                 </div>
 
-                <button 
+                <motion.button 
+                    whileHover={{ scale: 1.05, boxShadow: "0px 10px 20px rgba(0, 33, 71, 0.2)" }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => setView('history')}
-                    className="px-8 py-4 bg-ui-blue text-white rounded-full font-bold text-sm uppercase tracking-widest hover:bg-nobel-gold hover:text-slate-900 transition-all shadow-lg hover:shadow-xl hover:scale-105 transform"
+                    className="px-8 py-4 bg-ui-blue text-white rounded-full font-bold text-sm uppercase tracking-widest hover:bg-nobel-gold hover:text-slate-900 transition-all shadow-lg transform"
                 >
                     View All Executives
-                </button>
+                </motion.button>
            </div>
         </section>
 

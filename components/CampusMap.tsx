@@ -152,9 +152,15 @@ export const CampusMap: React.FC = () => {
           transition={{ delay: 0.2 }}
         >
           {/* Reverting to icon */}
-          <div className="w-full h-full flex items-center justify-center bg-white rounded-full shadow-md border-2 transition-colors group-hover/pin:bg-slate-100" style={{ borderColor: hall.color }}>
+          {/* MICRO-ANIMATION 9: Pulse Effect for Map Pins */}
+          <motion.div 
+            className="w-full h-full flex items-center justify-center bg-white rounded-full shadow-md border-2 transition-colors group-hover/pin:bg-slate-100 relative" 
+            style={{ borderColor: hall.color }}
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: Math.random() * 2 }}
+          >
               <MapPin size={20} style={{ color: hall.color }} />
-          </div>
+          </motion.div>
           
            {/* Label on Hover */}
            <div className="absolute top-14 whitespace-nowrap bg-slate-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover/pin:opacity-100 transition-opacity pointer-events-none z-20 font-medium tracking-wide uppercase">

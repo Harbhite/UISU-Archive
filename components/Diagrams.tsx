@@ -40,13 +40,21 @@ export const TimelineDiagram: React.FC = () => {
                     whileTap={{ scale: 0.95 }}
                     className="flex flex-col items-center gap-3 relative group outline-none"
                  >
-                     {/* Active Indicator Glow */}
+                     {/* Active Indicator Glow & Ripple */}
                      {activeEra === era.id && (
-                        <motion.div
-                          layoutId="glow"
-                          className="absolute top-0 w-16 h-16 rounded-full bg-nobel-gold/20 blur-md -z-10"
-                          transition={{ duration: 0.3 }}
-                        />
+                        <>
+                            <motion.div
+                                layoutId="glow"
+                                className="absolute top-0 w-16 h-16 rounded-full bg-nobel-gold/20 blur-md -z-10"
+                                transition={{ duration: 0.3 }}
+                            />
+                            {/* MICRO-ANIMATION 5: Pulse/Ripple Effect */}
+                            <motion.div
+                                className="absolute top-0 w-16 h-16 rounded-full border-2 border-nobel-gold/50 -z-10"
+                                animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+                                transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
+                            />
+                        </>
                      )}
 
                      <motion.div 
@@ -57,7 +65,8 @@ export const TimelineDiagram: React.FC = () => {
                         }`}
                         animate={{ 
                             borderColor: activeEra === era.id ? '#C5A059' : '#E7E5E4',
-                            backgroundColor: activeEra === era.id ? '#FFFFFF' : '#FFFFFF'
+                            backgroundColor: activeEra === era.id ? '#FFFFFF' : '#FFFFFF',
+                            scale: activeEra === era.id ? 1.1 : 1
                         }}
                      >
                         {era.icon}
@@ -114,43 +123,68 @@ export const StructureDiagram: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-3xl">
           {/* CEC */}
-          <div 
-            className="bg-white p-6 rounded-lg border border-stone-200 shadow-sm hover:shadow-md transition-all cursor-default relative overflow-hidden group"
+          {/* MICRO-ANIMATION 6: Structure Card Hover Effects */}
+          <motion.div 
+            className="bg-white p-6 rounded-lg border border-stone-200 shadow-sm cursor-default relative overflow-hidden group"
             onMouseEnter={() => setHoveredSection('cec')}
             onMouseLeave={() => setHoveredSection(null)}
+            whileHover={{ y: -5, boxShadow: "0 10px 20px rgba(0,0,0,0.05)" }}
+            transition={{ type: "spring", stiffness: 300 }}
           >
              <div className="absolute top-0 left-0 w-1 h-full bg-nobel-gold"></div>
-             <div className="mb-4 text-nobel-gold"><Landmark size={32}/></div>
+             <motion.div 
+                className="mb-4 text-nobel-gold"
+                animate={{ rotateY: hoveredSection === 'cec' ? 360 : 0 }}
+                transition={{ duration: 0.6 }}
+             >
+                <Landmark size={32}/>
+             </motion.div>
              <h4 className="font-bold text-stone-900 mb-2">The CEC</h4>
              <p className="text-xs font-bold text-stone-400 uppercase tracking-wider mb-3">Executive Council</p>
              <p className="text-sm text-stone-600">Headed by the President. Responsible for daily administration, welfare, and implementation of policies.</p>
-          </div>
+          </motion.div>
 
           {/* SRC */}
-          <div 
-            className="bg-white p-6 rounded-lg border border-stone-200 shadow-sm hover:shadow-md transition-all cursor-default relative overflow-hidden group"
+          <motion.div 
+            className="bg-white p-6 rounded-lg border border-stone-200 shadow-sm cursor-default relative overflow-hidden group"
             onMouseEnter={() => setHoveredSection('src')}
             onMouseLeave={() => setHoveredSection(null)}
+            whileHover={{ y: -5, boxShadow: "0 10px 20px rgba(0,0,0,0.05)" }}
+            transition={{ type: "spring", stiffness: 300 }}
           >
              <div className="absolute top-0 left-0 w-1 h-full bg-stone-800"></div>
-             <div className="mb-4 text-stone-800"><Users size={32}/></div>
+             <motion.div 
+                className="mb-4 text-stone-800"
+                animate={{ scale: hoveredSection === 'src' ? 1.2 : 1 }}
+                transition={{ type: 'spring' }}
+             >
+                <Users size={32}/>
+             </motion.div>
              <h4 className="font-bold text-stone-900 mb-2">The SRC</h4>
              <p className="text-xs font-bold text-stone-400 uppercase tracking-wider mb-3">Representative Council</p>
              <p className="text-sm text-stone-600">Composed of representatives from all faculties and halls. They make laws and check the executive.</p>
-          </div>
+          </motion.div>
 
           {/* JUDICIARY */}
-          <div 
-            className="bg-white p-6 rounded-lg border border-stone-200 shadow-sm hover:shadow-md transition-all cursor-default relative overflow-hidden group"
+          <motion.div 
+            className="bg-white p-6 rounded-lg border border-stone-200 shadow-sm cursor-default relative overflow-hidden group"
             onMouseEnter={() => setHoveredSection('judiciary')}
             onMouseLeave={() => setHoveredSection(null)}
+            whileHover={{ y: -5, boxShadow: "0 10px 20px rgba(0,0,0,0.05)" }}
+            transition={{ type: "spring", stiffness: 300 }}
           >
              <div className="absolute top-0 left-0 w-1 h-full bg-blue-900"></div>
-             <div className="mb-4 text-blue-900"><Scale size={32}/></div>
+             <motion.div 
+                className="mb-4 text-blue-900"
+                animate={{ rotate: hoveredSection === 'judiciary' ? [0, -10, 10, 0] : 0 }}
+                transition={{ duration: 0.5 }}
+             >
+                <Scale size={32}/>
+             </motion.div>
              <h4 className="font-bold text-stone-900 mb-2">The Judiciary</h4>
              <p className="text-xs font-bold text-stone-400 uppercase tracking-wider mb-3">Student Court</p>
              <p className="text-sm text-stone-600">Interprets the constitution and settles disputes. Ensures justice prevails in union affairs.</p>
-          </div>
+          </motion.div>
       </div>
     </div>
   );
