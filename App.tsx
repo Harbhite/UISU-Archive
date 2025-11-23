@@ -208,15 +208,12 @@ const App: React.FC = () => {
 
             {/* Center: Logo */}
             {/* MICRO-ANIMATION 2: Logo hover effect */}
-            <motion.div 
-                whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
-                transition={{ duration: 0.5 }}
+           
                 className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 cursor-pointer" 
                 onClick={() => setView('home')}
             >
                 <img src="/uisu-logo.png" alt="UISU Logo" className="h-10 w-auto object-contain" />
                 <span className="font-serif font-bold text-xl tracking-tight">UISU</span>
-            </motion.div>
 
             {/* Right: Action */}
             <div className="flex items-center gap-4">
