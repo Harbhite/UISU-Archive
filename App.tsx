@@ -5,8 +5,6 @@
 */
 
 import React, { useState, useEffect } from 'react';
-import { TowerScene } from './components/QuantumScene';
-// WebGLShader removed for the clean aesthetic of the reference image
 import { TimelineDiagram, StructureDiagram, PopulationChart } from './components/Diagrams';
 import { CampusMap, HallGrid } from './components/CampusMap';
 import { GovernancePage } from './components/Governance';
@@ -15,6 +13,7 @@ import { DocumentLibrary } from './components/DocumentLibrary';
 import { AnnouncementsPage } from './components/Announcements';
 import { TriviaSection } from './components/Trivia';
 import { CommunitiesPage, ClubDetailPage } from './components/Communities';
+import { TowerScene } from './components/QuantumScene';
 import { Menu, X, BookOpen, ArrowRight, Library, Star, MapPin, Scale, Megaphone, ChevronDown, Users } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -211,11 +210,12 @@ const App: React.FC = () => {
             <motion.div 
                 whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
                 transition={{ duration: 0.5 }}
-                className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 cursor-pointer" 
+                className="absolute left-1/2 -translate-x-1/2 flex items-center gap-3 cursor-pointer" 
                 onClick={() => setView('home')}
             >
-                <img src="/uisu-logo.png" alt="UISU Logo" className="h-10 w-auto object-contain" />
-                <span className="font-serif font-bold text-xl tracking-tight">UISU</span>
+                {/* Increased size for visibility */}
+                <img src="/uisu-logo.png" alt="UISU Logo" className="h-14 w-auto object-contain drop-shadow-md" />
+                <span className="font-serif font-bold text-2xl tracking-tight hidden md:inline text-white">UISU</span>
             </motion.div>
 
             {/* Right: Action */}
@@ -381,9 +381,9 @@ const App: React.FC = () => {
               <div className="inline-block mb-3 px-3 py-1 bg-ui-blue/10 text-ui-blue text-xs font-bold tracking-widest uppercase rounded-full">About Us</div>
               {/* MICRO-ANIMATION 4: Section Header Reveal */}
               <RevealHeader className="font-serif text-5xl md:text-6xl mb-6 leading-tight text-ui-blue">
-                First and <br/><span className="italic text-nobel-gold">Best.</span>
+                The Father of <br/><span className="italic text-nobel-gold">Intellectual Unionism.</span>
               </RevealHeader>
-              <p className="text-lg text-slate-500 font-medium">The Father of Intellectual Unionism.</p>
+              <p className="text-lg text-slate-500 font-medium">First and Best.</p>
             </div>
             <div className="md:col-span-7 text-xl text-slate-800 leading-relaxed space-y-6 font-light">
               <p>
@@ -500,58 +500,39 @@ const App: React.FC = () => {
                     
                     <div className="p-8 bg-white border-l-4 border-nobel-gold rounded-r-xl shadow-sm">
                         <p className="font-serif italic text-2xl text-ui-blue mb-4">
-                            "If you are not a Uite, you are not a Uite. First and Best."
+                            "The greatest weapon against tyranny is the sharp mind of the intellectual."
                         </p>
-                        <span className="text-sm font-bold text-slate-500 tracking-wider uppercase">— The Anthem</span>
+                        <p className="text-sm font-bold uppercase tracking-widest text-slate-400">- The Union Leader</p>
                     </div>
                 </div>
              </div>
         </section>
 
-        {/* Leaders / Footer CTA */}
-        <section className="py-24 bg-white">
-           <div className="container mx-auto px-6 text-center">
-                <RevealHeader className="font-serif text-4xl md:text-5xl mb-12 text-ui-blue">Notable Figures</RevealHeader>
+        {/* Footer */}
+        <footer className="bg-ui-blue text-white py-16 border-t border-white/10">
+            <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+                <div className="text-center md:text-left">
+                    <div className="flex items-center justify-center md:justify-start gap-3 mb-4">
+                        {/* Footer Logo */}
+                        <img src="/uisu-logo.png" alt="UISU Logo" className="h-10 w-auto brightness-0 invert" />
+                        <span className="font-serif text-2xl font-bold">UISU Archive</span>
+                    </div>
+                    <p className="text-slate-400 max-w-sm text-sm leading-relaxed">
+                        Preserving the history, culture, and intellectual heritage of the University of Ibadan Students' Union.
+                    </p>
+                </div>
                 
-                <div className="flex flex-col md:flex-row gap-8 justify-center items-center flex-wrap mb-12">
-                    <LeaderCard name="Kunle Adepeju" role="The Martyr (1971)" delay="0s" />
-                    <LeaderCard name="Segun Okeowo" role="Ali Must Go (1978)" delay="0.1s" />
-                    <LeaderCard name="Bolaji Aweda" role="Union President (2024)" delay="0.2s" />
+                <div className="flex gap-8 text-sm font-bold uppercase tracking-widest text-slate-400">
+                    <a href="#" className="hover:text-nobel-gold transition-colors">Contact</a>
+                    <a href="#" className="hover:text-nobel-gold transition-colors">Credits</a>
+                    <a href="#" className="hover:text-nobel-gold transition-colors">Legal</a>
                 </div>
-
-                <motion.button 
-                    whileHover={{ scale: 1.05, boxShadow: "0px 10px 20px rgba(0, 33, 71, 0.2)" }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setView('history')}
-                    className="px-8 py-4 bg-ui-blue text-white rounded-full font-bold text-sm uppercase tracking-widest hover:bg-nobel-gold hover:text-slate-900 transition-all shadow-lg transform"
-                >
-                    View All Executives
-                </motion.button>
-           </div>
-        </section>
-
+            </div>
+            <div className="container mx-auto px-6 mt-12 pt-8 border-t border-white/10 text-center text-xs text-slate-600">
+                &copy; {new Date().getFullYear()} University of Ibadan Students' Union. All rights reserved.
+            </div>
+        </footer>
       </main>
-
-      <footer className="bg-ui-blue text-white py-20 border-t border-white/10">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-12">
-            <div className="text-center md:text-left">
-                <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
-                    <div className="w-12 h-12 bg-white text-ui-blue rounded-full flex items-center justify-center font-serif font-bold text-xl">U</div>
-                    <div className="text-3xl font-serif font-bold">UISU ARCHIVE</div>
-                </div>
-                <p className="text-slate-400 max-w-sm">Documenting the history, struggle, and intellectual dominance of the University of Ibadan Students' Union.</p>
-            </div>
-            <div className="flex flex-wrap justify-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-400">
-                <a href="#" className="hover:text-nobel-gold transition-colors">Contact</a>
-                <a href="#" className="hover:text-nobel-gold transition-colors">Donate</a>
-                <a href="#" className="hover:text-nobel-gold transition-colors">Submit History</a>
-                <a href="#" className="hover:text-nobel-gold transition-colors">Legal</a>
-            </div>
-        </div>
-        <div className="text-center mt-16 text-xs text-slate-600 tracking-widest uppercase">
-            © 2024 UISU Archive Project. Not officially affiliated with the University administration.
-        </div>
-      </footer>
     </div>
   );
 };

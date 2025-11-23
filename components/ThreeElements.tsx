@@ -9,6 +9,25 @@ import { useFrame } from '@react-three/fiber';
 import { Float, Text, MeshDistortMaterial, useCursor } from '@react-three/drei';
 import * as THREE from 'three';
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      group: any;
+      mesh: any;
+      sphereGeometry: any;
+      cylinderGeometry: any;
+      boxGeometry: any;
+      torusGeometry: any;
+      torusKnotGeometry: any;
+      planeGeometry: any;
+      coneGeometry: any;
+      meshStandardMaterial: any;
+      meshBasicMaterial: any;
+      meshNormalMaterial: any;
+    }
+  }
+}
+
 // 1. DNA Helix (Lineage)
 export const DNAHelix = (props: any) => {
   const group = useRef<THREE.Group>(null);

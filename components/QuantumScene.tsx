@@ -8,6 +8,18 @@ import React from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Float, Box, Cylinder, Stars } from '@react-three/drei';
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      ambientLight: any;
+      pointLight: any;
+      spotLight: any;
+      group: any;
+      meshStandardMaterial: any;
+    }
+  }
+}
+
 export const HeroScene: React.FC = () => {
   return (
     <div className="absolute inset-0 z-0 opacity-100 pointer-events-none">

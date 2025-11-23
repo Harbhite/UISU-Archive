@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -40,6 +41,8 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  variant?: VariantProps<typeof buttonVariants>['variant'];
+  size?: VariantProps<typeof buttonVariants>['size'];
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -228,7 +231,7 @@ const colorVariants: Record<
     textShadow: "[text-shadow:_0_-1px_0_rgb(146_64_14_/_100%)]",
   },
   gold: {
-    outer: "bg-gradient-to-b from-[#917100] to-[#EAD98F]",
+    outer: "bg-gradient-to-b from-[#917100] to-[#E9B486]",
     inner: "bg-gradient-to-b from-[#FFFDDD] via-[#856807] to-[#FFF1B3]",
     button: "bg-gradient-to-b from-[#FFEBA1] to-[#9B873F]",
     textColor: "text-[#FFFDE5]",
