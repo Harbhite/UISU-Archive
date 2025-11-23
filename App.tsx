@@ -27,19 +27,19 @@ const Marquee = () => {
       <div className="animate-marquee whitespace-nowrap flex gap-8 items-center font-bold text-xs tracking-[0.2em] uppercase">
         <span>First and Best</span> <Star size={10} fill="currentColor" />
         <span>The Greatest Uites</span> <Star size={10} fill="currentColor" />
-        <span>Intellectual Capital</span> <Star size={10} fill="currentColor" />
+        <span>Father of Intellectual Unionism</span> <Star size={10} fill="currentColor" />
         <span>Est. 1948</span> <Star size={10} fill="currentColor" />
         <span>Aluta Continua</span> <Star size={10} fill="currentColor" />
         <span>Victoria Ascerta</span> <Star size={10} fill="currentColor" />
         <span>First and Best</span> <Star size={10} fill="currentColor" />
         <span>The Greatest Uites</span> <Star size={10} fill="currentColor" />
-        <span>Intellectual Capital</span> <Star size={10} fill="currentColor" />
+        <span>Father of Intellectual Unionism</span> <Star size={10} fill="currentColor" />
         <span>Est. 1948</span> <Star size={10} fill="currentColor" />
         <span>Aluta Continua</span> <Star size={10} fill="currentColor" />
         <span>Victoria Ascerta</span> <Star size={10} fill="currentColor" />
         <span>First and Best</span> <Star size={10} fill="currentColor" />
         <span>The Greatest Uites</span> <Star size={10} fill="currentColor" />
-        <span>Intellectual Capital</span> <Star size={10} fill="currentColor" />
+        <span>Father of Intellectual Unionism</span> <Star size={10} fill="currentColor" />
         <span>Est. 1948</span> <Star size={10} fill="currentColor" />
         <span>Aluta Continua</span> <Star size={10} fill="currentColor" />
         <span>Victoria Ascerta</span> <Star size={10} fill="currentColor" />
@@ -214,7 +214,7 @@ const App: React.FC = () => {
                 className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 cursor-pointer" 
                 onClick={() => setView('home')}
             >
-                <img src="/uisu-logo.png" alt="Logo" className="w-8 h-8 object-contain" />
+                <img src="/uisu-logo.png" alt="UISU Logo" className="h-10 w-auto object-contain" />
                 <span className="font-serif font-bold text-xl tracking-tight">UISU</span>
             </motion.div>
 
@@ -383,7 +383,7 @@ const App: React.FC = () => {
               <RevealHeader className="font-serif text-5xl md:text-6xl mb-6 leading-tight text-ui-blue">
                 First and <br/><span className="italic text-nobel-gold">Best.</span>
               </RevealHeader>
-              <p className="text-lg text-slate-500 font-medium">The Intellectual Capital of the Nation.</p>
+              <p className="text-lg text-slate-500 font-medium">The Father of Intellectual Unionism.</p>
             </div>
             <div className="md:col-span-7 text-xl text-slate-800 leading-relaxed space-y-6 font-light">
               <p>

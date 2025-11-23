@@ -777,7 +777,7 @@ export const CommunitiesPage: React.FC<CommunitiesProps> = ({ onBack, onClubSele
                 </div>
 
                 {/* Search & Filter */}
-                <div className="mb-16 space-y-8 sticky top-28 z-20 bg-slate-50/95 backdrop-blur-sm py-4 border-b border-slate-200">
+                <div className="mb-16 space-y-8 py-4 border-b border-slate-200">
                     <div className="relative max-w-2xl">
                         <input 
                             type="text" 
