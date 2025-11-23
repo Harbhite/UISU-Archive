@@ -214,7 +214,7 @@ const App: React.FC = () => {
                 onClick={() => setView('home')}
             >
                 {/* Increased size for visibility */}
-                <img src="/uisu-logo.png" alt="UISU Logo" className="h-14 w-auto object-contain drop-shadow-md" />
+                <img src="/uisu-logo.png"</img> alt="UISU Logo" className="h-14 w-auto object-contain drop-shadow-md" />
                 <span className="font-serif font-bold text-2xl tracking-tight hidden md:inline text-white">UISU</span>
             </motion.div>
 
