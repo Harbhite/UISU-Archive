@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, FileText, Download, Search, Filter, Check, Upload, X, Star } from 'lucide-react';
+import { ArrowLeft, FileText, Download, Search, Filter, Check, Upload, X, Star, Volume2, StopCircle } from 'lucide-react';
 
 interface DocumentLibraryProps {
   onBack: () => void;
@@ -43,6 +43,10 @@ export const DocumentLibrary: React.FC<DocumentLibraryProps> = ({ onBack }) => {
     const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
     
+    // Audio State
+    const [playingDocId, setPlayingDocId] = useState<string | null>(null);
+    const synthesisRef = useRef<SpeechSynthesis | null>(null);
+    
     // Form State
     const [newTitle, setNewTitle] = useState("");
     const [newYear, setNewYear] = useState("");
@@ -52,6 +56,48 @@ export const DocumentLibrary: React.FC<DocumentLibraryProps> = ({ onBack }) => {
 
     const decades = ["All", "2020s", "2010s", "2000s", "1990s", "1980s", "1970s", "1960s", "1950s"];
     const docTypes = ['Constitution', 'Bill', 'Manifesto', 'Speech', 'Report', 'Memo'];
+
+    // Initialize Speech Synthesis
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.speechSynthesis) {
+            synthesisRef.current = window.speechSynthesis;
+        }
+        // Cleanup on unmount
+        return () => {
+            if (synthesisRef.current) {
+                synthesisRef.current.cancel();
+            }
+        };
+    }, []);
+
+    const toggleSpeech = (doc: Doc) => {
+        if (!synthesisRef.current) return;
+
+        // If currently playing this document, stop it
+        if (playingDocId === doc.id) {
+            synthesisRef.current.cancel();
+            setPlayingDocId(null);
+            return;
+        }
+
+        // Stop any other playing
+        synthesisRef.current.cancel();
+
+        const text = `Title: ${doc.title}. Description: ${doc.description}`;
+        const utterance = new SpeechSynthesisUtterance(text);
+        
+        // Optional: Try to find a good English voice
+        const voices = synthesisRef.current.getVoices();
+        const preferredVoice = voices.find(v => v.name.includes('Google US English')) || voices.find(v => v.lang.startsWith('en'));
+        if (preferredVoice) utterance.voice = preferredVoice;
+
+        utterance.rate = 0.9; // Slightly slower for clarity
+        utterance.onend = () => setPlayingDocId(null);
+        utterance.onerror = () => setPlayingDocId(null);
+
+        synthesisRef.current.speak(utterance);
+        setPlayingDocId(doc.id);
+    };
 
     const toggleType = (type: string) => {
         setSelectedTypes(prev => 
@@ -208,21 +254,51 @@ export const DocumentLibrary: React.FC<DocumentLibraryProps> = ({ onBack }) => {
                                         layout
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        className="group bg-white p-8 border border-slate-100 hover:border-slate-300 hover:shadow-xl transition-all duration-300 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center"
+                                        className="group bg-white p-8 border border-slate-100 hover:border-slate-300 hover:shadow-xl transition-all duration-300 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center relative overflow-hidden"
                                     >
-                                        <div>
+                                        {/* Active playing indicator strip */}
+                                        {playingDocId === doc.id && (
+                                            <motion.div 
+                                                layoutId="playingStrip"
+                                                className="absolute left-0 top-0 bottom-0 w-1 bg-nobel-gold"
+                                            />
+                                        )}
+
+                                        <div className="flex-1">
                                             <div className="flex items-center gap-3 mb-2">
                                                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{doc.type}</span>
                                                 <div className="w-1 h-1 rounded-full bg-slate-300"></div>
                                                 <span className="text-[10px] font-bold uppercase tracking-widest text-nobel-gold">{doc.year}</span>
                                             </div>
-                                            <h3 className="font-serif text-2xl text-ui-blue mb-2 group-hover:text-nobel-gold transition-colors">{doc.title}</h3>
+                                            <h3 className={`font-serif text-2xl mb-2 transition-colors ${playingDocId === doc.id ? 'text-nobel-gold' : 'text-ui-blue group-hover:text-nobel-gold'}`}>
+                                                {doc.title}
+                                            </h3>
                                             <p className="text-sm text-slate-500 font-light max-w-lg">{doc.description}</p>
                                         </div>
                                         
-                                        <button className="shrink-0 flex items-center gap-2 px-6 py-3 bg-slate-50 hover:bg-ui-blue hover:text-white text-slate-900 text-xs font-bold uppercase tracking-widest transition-all">
-                                            <Download size={14} /> <span>Download</span>
-                                        </button>
+                                        <div className="shrink-0 flex items-center gap-3">
+                                            <button 
+                                                onClick={() => toggleSpeech(doc)}
+                                                className={`flex items-center gap-2 w-10 h-10 md:w-auto md:h-auto md:px-4 md:py-3 rounded-full md:rounded-none transition-all ${playingDocId === doc.id ? 'bg-nobel-gold text-slate-900' : 'bg-slate-50 text-slate-500 hover:bg-slate-200'} justify-center`}
+                                                title={playingDocId === doc.id ? "Stop Narration" : "Read Aloud"}
+                                            >
+                                                {playingDocId === doc.id ? (
+                                                    <>
+                                                        <StopCircle size={16} /> 
+                                                        <span className="hidden md:inline text-xs font-bold uppercase tracking-widest">Stop</span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Volume2 size={16} />
+                                                        <span className="hidden md:inline text-xs font-bold uppercase tracking-widest">Listen</span>
+                                                    </>
+                                                )}
+                                            </button>
+
+                                            <button className="flex items-center gap-2 px-6 py-3 bg-slate-50 hover:bg-ui-blue hover:text-white text-slate-900 text-xs font-bold uppercase tracking-widest transition-all">
+                                                <Download size={14} /> <span className="hidden md:inline">Download</span>
+                                            </button>
+                                        </div>
                                     </motion.div>
                                 ))
                             ) : (
@@ -235,7 +311,7 @@ export const DocumentLibrary: React.FC<DocumentLibraryProps> = ({ onBack }) => {
                 </div>
             </div>
 
-            {/* Upload Modal - Kept Clean */}
+            {/* Upload Modal */}
             <AnimatePresence>
                 {isUploadModalOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm">

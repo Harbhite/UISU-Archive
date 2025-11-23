@@ -36,12 +36,10 @@ export const DNAHelix = (props: any) => {
             <meshStandardMaterial color="#002147" emissive="#002147" emissiveIntensity={0.5} />
           </mesh>
           {/* Connecting rod */}
-          <group rotation={[0, i * 0.5, 0]} position={[0, 0, 0]}>
-            <mesh rotation={[0, 0, Math.PI / 2]}>
-              <cylinderGeometry args={[0.02, 0.02, 3, 8]} />
-              <meshStandardMaterial color="#ccc" opacity={0.3} transparent />
-            </mesh>
-          </group>
+          <mesh rotation={[0, i * 0.5, 0]} position={[0, 0, 0]}>
+            <cylinderGeometry args={[0.02, 0.02, 3, 8]} rotation={[0,0, Math.PI/2]} />
+            <meshStandardMaterial color="#ccc" opacity={0.3} transparent />
+          </mesh>
         </group>
       ))}
     </group>

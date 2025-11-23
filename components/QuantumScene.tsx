@@ -6,13 +6,13 @@
 
 import React from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Float, Environment, Box, Cylinder, Stars } from '@react-three/drei';
+import { Float, Box, Cylinder, Stars } from '@react-three/drei';
 
 export const HeroScene: React.FC = () => {
   return (
     <div className="absolute inset-0 z-0 opacity-100 pointer-events-none">
       <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
-        <ambientLight intensity={0.5} />
+        <ambientLight intensity={0.8} />
         <pointLight position={[10, 10, 10]} intensity={1} />
         <pointLight position={[-10, -10, -5]} intensity={0.5} color="#C5A059" />
         
@@ -31,7 +31,6 @@ export const HeroScene: React.FC = () => {
         </Float>
 
         <Stars radius={100} depth={50} count={1000} factor={4} saturation={0} fade speed={1} />
-        <Environment preset="city" />
       </Canvas>
     </div>
   );
@@ -41,10 +40,9 @@ export const TowerScene: React.FC = () => {
   return (
     <div className="w-full h-full absolute inset-0">
       <Canvas camera={{ position: [0, 2, 8], fov: 35 }}>
-        <ambientLight intensity={1} />
+        <ambientLight intensity={1.2} />
         <spotLight position={[5, 10, 5]} angle={0.3} penumbra={1} intensity={2} color="#C5A059" />
         <pointLight position={[-5, -5, -5]} intensity={0.5} />
-        <Environment preset="city" />
         
         <Float rotationIntensity={0.1} floatIntensity={0.2} speed={1}>
           <group rotation={[0, -0.2, 0]} position={[0, -2, 0]}>

@@ -14,7 +14,8 @@ import { PastLeadersPage } from './components/PastLeaders';
 import { DocumentLibrary } from './components/DocumentLibrary';
 import { AnnouncementsPage } from './components/Announcements';
 import { TriviaSection } from './components/Trivia';
-import { Menu, X, BookOpen, ArrowRight, Library, Star, MapPin, Scale, Megaphone, ChevronDown } from 'lucide-react';
+import { CommunitiesPage, ClubDetailPage } from './components/Communities';
+import { Menu, X, BookOpen, ArrowRight, Library, Star, MapPin, Scale, Megaphone, ChevronDown, Users } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- SUB-COMPONENTS FOR THE NEW DESIGN ---
@@ -26,19 +27,19 @@ const Marquee = () => {
       <div className="animate-marquee whitespace-nowrap flex gap-8 items-center font-bold text-xs tracking-[0.2em] uppercase">
         <span>First and Best</span> <Star size={10} fill="currentColor" />
         <span>The Greatest Uites</span> <Star size={10} fill="currentColor" />
-        <span>Father of Intellectual Unionism</span> <Star size={10} fill="currentColor" />
+        <span>Intellectual Capital</span> <Star size={10} fill="currentColor" />
         <span>Est. 1948</span> <Star size={10} fill="currentColor" />
         <span>Aluta Continua</span> <Star size={10} fill="currentColor" />
         <span>Victoria Ascerta</span> <Star size={10} fill="currentColor" />
         <span>First and Best</span> <Star size={10} fill="currentColor" />
         <span>The Greatest Uites</span> <Star size={10} fill="currentColor" />
-        <span>Father of Intellectual Unionism</span> <Star size={10} fill="currentColor" />
+        <span>Intellectual Capital</span> <Star size={10} fill="currentColor" />
         <span>Est. 1948</span> <Star size={10} fill="currentColor" />
         <span>Aluta Continua</span> <Star size={10} fill="currentColor" />
         <span>Victoria Ascerta</span> <Star size={10} fill="currentColor" />
         <span>First and Best</span> <Star size={10} fill="currentColor" />
         <span>The Greatest Uites</span> <Star size={10} fill="currentColor" />
-        <span>Father of Intellectual Unionism</span> <Star size={10} fill="currentColor" />
+        <span>Intellectual Capital</span> <Star size={10} fill="currentColor" />
         <span>Est. 1948</span> <Star size={10} fill="currentColor" />
         <span>Aluta Continua</span> <Star size={10} fill="currentColor" />
         <span>Victoria Ascerta</span> <Star size={10} fill="currentColor" />
@@ -117,8 +118,9 @@ const RevealHeader = ({ children, className }: { children?: React.ReactNode, cla
 // --- MAIN APP COMPONENT ---
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'home' | 'governance' | 'history' | 'documents' | 'announcements'>('home');
+  const [view, setView] = useState<'home' | 'governance' | 'history' | 'documents' | 'announcements' | 'communities' | 'club-detail'>('home');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedClubId, setSelectedClubId] = useState<string | null>(null);
 
   // Scroll to top when view changes
   useEffect(() => {
@@ -156,6 +158,23 @@ const App: React.FC = () => {
   if (view === 'history') return <PastLeadersPage onBack={() => setView('home')} />;
   if (view === 'documents') return <DocumentLibrary onBack={() => setView('home')} />;
   if (view === 'announcements') return <AnnouncementsPage onBack={() => setView('home')} />;
+  
+  if (view === 'communities') return (
+    <CommunitiesPage 
+        onBack={() => setView('home')} 
+        onClubSelect={(id) => {
+            setSelectedClubId(id);
+            setView('club-detail');
+        }} 
+    />
+  );
+  
+  if (view === 'club-detail' && selectedClubId) return (
+    <ClubDetailPage 
+        clubId={selectedClubId} 
+        onBack={() => setView('communities')} 
+    />
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-nobel-gold selection:text-white overflow-x-hidden">
@@ -195,8 +214,8 @@ const App: React.FC = () => {
                 className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 cursor-pointer" 
                 onClick={() => setView('home')}
             >
-                <img src="/uisu-logo.jpg.png" alt="Logo" className="w-8 h-8 object-contain" />
-                <span className="font-serif font-bold text-xl tracking-tight">UI'SU</span>
+                <img src="/uisu-logo.png" alt="Logo" className="w-8 h-8 object-contain" />
+                <span className="font-serif font-bold text-xl tracking-tight">UISU</span>
             </motion.div>
 
             {/* Right: Action */}
@@ -228,6 +247,7 @@ const App: React.FC = () => {
             <button onClick={() => {setMenuOpen(false); setView('governance')}} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">Governance</button>
             <a href="#halls" onClick={scrollToSection('halls')} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">Republics</a>
             <button onClick={() => {setMenuOpen(false); setView('documents')}} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">Library</button>
+            <button onClick={() => {setMenuOpen(false); setView('communities')}} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">Clubs & Societies</button>
         </motion.div>
       )}
 
@@ -296,6 +316,15 @@ const App: React.FC = () => {
                     color="bg-ui-blue"
                     onClick={() => scrollToSection('history')({preventDefault: () => {}} as any)}
                     delay={0.6}
+                />
+
+                <TiltedCard 
+                    title="Communities" 
+                    subtitle="Clubs & Societies" 
+                    icon={Users}
+                    color="bg-emerald-700"
+                    onClick={() => setView('communities')}
+                    delay={0.65}
                 />
 
                 <TiltedCard 
