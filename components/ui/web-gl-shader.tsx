@@ -5,6 +5,12 @@ import { useEffect, useRef } from "react"
 import * as THREE from "three"
 import React from 'react'
 
+/**
+ * A WebGL shader component using Three.js to render a dynamic, distorted background effect.
+ * It creates a scene with a shader material that simulates a fluid-like distortion.
+ *
+ * @returns {JSX.Element} A canvas element rendering the WebGL shader.
+ */
 export function WebGLShader() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const sceneRef = useRef<{

@@ -8,7 +8,11 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Landmark, Users, Scale, Gavel, Mic, Book, Coins, Shield, Trophy, Star, ArrowRight } from 'lucide-react';
 
+/**
+ * Props for the GovernancePage component.
+ */
 interface GovernanceProps {
+  /** Callback for navigating back to the previous screen. */
   onBack: () => void;
 }
 
@@ -27,6 +31,13 @@ const itemVariants = {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
 };
 
+/**
+ * A page detailing the governance structure of the Union.
+ * Uses tabs to switch between Executive, Legislative, and Judiciary branches.
+ *
+ * @param {GovernanceProps} props - The component props.
+ * @returns {JSX.Element} The rendered GovernancePage component.
+ */
 export const GovernancePage: React.FC<GovernanceProps> = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState<'cec' | 'src' | 'judiciary'>('cec');
 
@@ -269,6 +280,16 @@ export const GovernancePage: React.FC<GovernanceProps> = ({ onBack }) => {
   );
 };
 
+/**
+ * A card component displaying details about a specific governance role.
+ *
+ * @param {object} props - The component props.
+ * @param {string} props.title - The title of the role (e.g., "The President").
+ * @param {string} props.desc - A description of the role's responsibilities.
+ * @param {React.ReactNode} props.icon - An icon representing the role.
+ * @param {boolean} [props.isDark=false] - Whether the card uses a dark theme.
+ * @returns {JSX.Element} The rendered RoleCard component.
+ */
 const RoleCard = ({ title, desc, icon, isDark = false }: { title: string, desc: string, icon: React.ReactNode, isDark?: boolean }) => (
     <motion.div 
         variants={itemVariants}

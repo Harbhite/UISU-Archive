@@ -8,23 +8,43 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, Calendar, Users, ChevronDown, ChevronUp, User, Star } from 'lucide-react';
 
+/**
+ * Props for the PastLeadersPage component.
+ */
 interface PastLeadersProps {
+  /** Callback for navigating back to the previous screen. */
   onBack: () => void;
 }
 
+/**
+ * Represents a member of the executive council.
+ */
 interface ExecutiveMember {
+    /** The role or position held (e.g., "Vice President"). */
     role: string;
+    /** The name of the executive member. */
     name: string;
+    /** Optional alias or nickname. */
     alias?: string;
 }
 
+/**
+ * Represents a Union administration tenure.
+ */
 interface Administration {
+    /** The academic session year (e.g., "2023/2024"). */
     session: string;
+    /** The name of the President. */
     president: string;
+    /** The President's alias. */
     alias: string;
+    /** The administration's motto. */
     motto: string;
+    /** Key events or achievements during the tenure. */
     notableEvents: string;
+    /** The status of the administration (e.g., "Completed", "Active"). */
     status: 'Completed' | 'Suspended' | 'Impeached' | 'Active';
+    /** List of executive team members. */
     team: ExecutiveMember[];
 }
 
@@ -137,6 +157,13 @@ const administrations: Administration[] = [
     }
 ];
 
+/**
+ * A page displaying a list of past Union administrations (Hall of Fame).
+ * Allows searching and expanding details for each administration.
+ *
+ * @param {PastLeadersProps} props - The component props.
+ * @returns {JSX.Element} The rendered PastLeadersPage component.
+ */
 export const PastLeadersPage: React.FC<PastLeadersProps> = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -276,6 +303,13 @@ export const PastLeadersPage: React.FC<PastLeadersProps> = ({ onBack }) => {
   );
 }
 
+/**
+ * A helper component to display status badges for administrations.
+ *
+ * @param {object} props - The component props.
+ * @param {string} props.status - The status text to display.
+ * @returns {JSX.Element} The rendered StatusBadge component.
+ */
 const StatusBadge = ({ status }: { status: string }) => {
     let styles = "bg-slate-100 text-slate-500";
     if (status === 'Active') styles = "bg-green-50 text-green-700 border-green-100";

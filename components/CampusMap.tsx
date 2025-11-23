@@ -8,15 +8,27 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, X, Home, GraduationCap, Info, ChevronDown, ChevronUp } from 'lucide-react';
 
+/**
+ * Represents a residence hall on campus.
+ */
 interface Hall {
+  /** Unique identifier for the hall. */
   id: string;
+  /** Official name of the hall. */
   name: string;
+  /** Common alias or nickname for the hall. */
   alias: string;
+  /** The hall's motto. */
   motto: string;
+  /** A detailed description of the hall's history and culture. */
   desc: string;
+  /** List of notable alumni or figures associated with the hall. */
   notable: string[];
+  /** Representative color code (hex) for the hall. */
   color: string;
+  /** Position on the interactive map (top and left percentages). */
   position: { top: string; left: string };
+  /** Type of hall residence (male, female, or mixed). */
   type: 'male' | 'female' | 'mixed';
 }
 
@@ -122,6 +134,12 @@ const halls: Hall[] = [
   }
 ];
 
+/**
+ * An interactive map component displaying campus residence halls.
+ * Users can click on map pins to view details about each hall.
+ *
+ * @returns {JSX.Element} The rendered CampusMap component.
+ */
 export const CampusMap: React.FC = () => {
   const [selectedHall, setSelectedHall] = useState<Hall | null>(null);
 
@@ -237,6 +255,12 @@ export const CampusMap: React.FC = () => {
   );
 };
 
+/**
+ * A grid layout component that lists all residence halls.
+ * Allows users to expand each hall to view more details.
+ *
+ * @returns {JSX.Element} The rendered HallGrid component.
+ */
 export const HallGrid: React.FC = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 

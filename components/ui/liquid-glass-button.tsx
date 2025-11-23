@@ -7,6 +7,9 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "../../lib/utils"
 
+/**
+ * Variants for the standard Button component.
+ */
 const buttonVariants = cva(
   "inline-flex items-center cursor-pointer justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
@@ -37,14 +40,24 @@ const buttonVariants = cva(
   }
 )
 
+/**
+ * Props for the Button component.
+ * Extends standard button attributes and variant props.
+ */
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
+  /** If true, the button renders as a child component (using Radix Slot). */
   asChild?: boolean
+  /** The visual variant of the button. */
   variant?: VariantProps<typeof buttonVariants>['variant'];
+  /** The size of the button. */
   size?: VariantProps<typeof buttonVariants>['size'];
 }
 
+/**
+ * A flexible button component supporting multiple variants and sizes.
+ */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
@@ -61,6 +74,9 @@ Button.displayName = "Button"
 
 export { Button, buttonVariants, liquidbuttonVariants, LiquidButton }
 
+/**
+ * Variants for the LiquidButton component.
+ */
 const liquidbuttonVariants = cva(
   "inline-flex items-center transition-colors justify-center cursor-pointer gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
@@ -92,6 +108,18 @@ const liquidbuttonVariants = cva(
   }
 )
 
+/**
+ * A button component with a liquid-like glass visual effect.
+ * Uses SVG filters to create a distortion effect.
+ *
+ * @param {object} props - Component props.
+ * @param {string} [props.className] - Additional class names.
+ * @param {string} [props.variant] - Visual variant.
+ * @param {string} [props.size] - Button size.
+ * @param {boolean} [props.asChild] - Whether to render as a child component.
+ * @param {React.ReactNode} props.children - Button content.
+ * @returns {JSX.Element} The rendered LiquidButton component.
+ */
 function LiquidButton({
   className,
   variant,
@@ -133,7 +161,12 @@ function LiquidButton({
   )
 }
 
-
+/**
+ * An SVG filter component used to create the glass/liquid distortion effect.
+ * Not meant to be rendered directly, but included by LiquidButton.
+ *
+ * @returns {JSX.Element} The SVG filter definition.
+ */
 function GlassFilter() {
   return (
     <svg className="hidden">
@@ -179,6 +212,9 @@ function GlassFilter() {
   );
 }
 
+/**
+ * Defines available color variants for the MetalButton.
+ */
 type ColorVariant =
   | "default"
   | "primary"
@@ -187,8 +223,12 @@ type ColorVariant =
   | "gold"
   | "bronze";
  
+/**
+ * Props for the MetalButton component.
+ */
 export interface MetalButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** The color variant of the button. */
   variant?: ColorVariant;
 }
  
@@ -298,6 +338,9 @@ const metalButtonVariants = (
   };
 };
  
+/**
+ * A helper component providing the shine effect for the MetalButton.
+ */
 const ShineEffect = ({ isPressed }: { isPressed: boolean }) => {
   return (
     <div
@@ -311,6 +354,9 @@ const ShineEffect = ({ isPressed }: { isPressed: boolean }) => {
   );
 };
  
+/**
+ * A button component with a metallic look and feel, including press and hover effects.
+ */
 export const MetalButton = React.forwardRef<
   HTMLButtonElement,
   MetalButtonProps

@@ -2,6 +2,14 @@ import path from 'path';
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
+/**
+ * Vite configuration file.
+ * Configures the development server, plugins, environment variables, and path aliases.
+ *
+ * @param {object} configEnv - Configuration environment object.
+ * @param {string} configEnv.mode - The mode the app is running in (e.g., 'development', 'production').
+ * @returns {import('vite').UserConfig} The Vite configuration object.
+ */
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {

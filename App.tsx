@@ -1,3 +1,4 @@
+
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -18,6 +19,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // --- SUB-COMPONENTS FOR THE NEW DESIGN ---
 
+/**
+ * A scrolling marquee component displaying key phrases and mottos of the Union.
+ * Pauses on hover.
+ *
+ * @returns {JSX.Element} The Marquee component.
+ */
 const Marquee = () => {
   return (
     <div className="bg-nobel-gold text-ui-blue py-2 overflow-hidden relative z-50 cursor-default">
@@ -46,6 +53,19 @@ const Marquee = () => {
   );
 };
 
+/**
+ * A tilted card component used in the interactive gallery navigation.
+ * Responds to hover with rotation and scaling effects.
+ *
+ * @param {object} props - Component props.
+ * @param {string} props.title - Title of the card.
+ * @param {string} props.subtitle - Subtitle of the card.
+ * @param {React.ElementType} props.icon - Icon component to display.
+ * @param {string} props.color - CSS class for background color.
+ * @param {function} props.onClick - Click handler.
+ * @param {number} props.delay - Animation delay in seconds.
+ * @returns {JSX.Element} The TiltedCard component.
+ */
 const TiltedCard = ({ title, subtitle, icon: Icon, color, onClick, delay }: any) => {
   return (
     <motion.div 
@@ -77,6 +97,15 @@ const TiltedCard = ({ title, subtitle, icon: Icon, color, onClick, delay }: any)
   );
 };
 
+/**
+ * A card component displaying a leader's name and role.
+ *
+ * @param {object} props - Component props.
+ * @param {string} props.name - Name of the leader.
+ * @param {string} props.role - Role of the leader.
+ * @param {string} props.delay - Animation delay string.
+ * @returns {JSX.Element} The LeaderCard component.
+ */
 const LeaderCard = ({ name, role, delay }: { name: string, role: string, delay: string }) => {
   return (
     <motion.div 
@@ -115,6 +144,13 @@ const RevealHeader = ({ children, className }: { children?: React.ReactNode, cla
 
 // --- MAIN APP COMPONENT ---
 
+/**
+ * The main application component.
+ * Manages the current view state and renders the appropriate page or section.
+ * Includes the navigation bar, hero section, and various feature sections.
+ *
+ * @returns {JSX.Element} The App component.
+ */
 const App: React.FC = () => {
   const [view, setView] = useState<'home' | 'governance' | 'history' | 'documents' | 'announcements' | 'communities' | 'club-detail'>('home');
   const [menuOpen, setMenuOpen] = useState(false);

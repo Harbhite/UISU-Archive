@@ -8,16 +8,29 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, FileText, Download, Search, Filter, Check, Upload, X, Star, Volume2, StopCircle } from 'lucide-react';
 
+/**
+ * Props for the DocumentLibrary component.
+ */
 interface DocumentLibraryProps {
+  /** Callback for navigating back to the previous screen. */
   onBack: () => void;
 }
 
+/**
+ * Represents a document in the library.
+ */
 interface Doc {
+    /** Unique identifier for the document. */
     id: string;
+    /** Title of the document. */
     title: string;
+    /** The year the document was created or published. */
     year: number;
+    /** The classification of the document. */
     type: 'Constitution' | 'Bill' | 'Manifesto' | 'Speech' | 'Report' | 'Memo';
+    /** File size string (e.g., "2.4 MB"). */
     size: string;
+    /** Brief description of the document's content. */
     description: string;
 }
 
@@ -36,6 +49,13 @@ const initialDocuments: Doc[] = [
     { id: '12', title: '2024 Constitution (Digital Edition)', year: 2024, type: 'Constitution', size: '4.2 MB', description: 'The current operating constitution of the Union.' },
 ];
 
+/**
+ * A component displaying a library of historical documents.
+ * Features include searching, filtering by decade and type, text-to-speech narration, and file uploading.
+ *
+ * @param {DocumentLibraryProps} props - The component props.
+ * @returns {JSX.Element} The rendered DocumentLibrary component.
+ */
 export const DocumentLibrary: React.FC<DocumentLibraryProps> = ({ onBack }) => {
     const [documents, setDocuments] = useState<Doc[]>(initialDocuments);
     const [searchTerm, setSearchTerm] = useState("");

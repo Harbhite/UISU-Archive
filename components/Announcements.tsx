@@ -8,17 +8,31 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Megaphone, Calendar, Tag, ChevronRight, Star, Bell, Clock, X } from 'lucide-react';
 
+/**
+ * Props for the AnnouncementsPage component.
+ */
 interface AnnouncementsProps {
+  /** Callback function to handle the back navigation action. */
   onBack: () => void;
 }
 
+/**
+ * Represents a single announcement item.
+ */
 interface Announcement {
+    /** Unique identifier for the announcement. */
     id: string;
+    /** The title of the announcement. */
     title: string;
+    /** The date the announcement was published. */
     date: string;
+    /** The category of the announcement. */
     category: 'News' | 'Event' | 'Memo' | 'Urgent';
+    /** A short summary of the announcement displayed in the list view. */
     summary: string;
+    /** The full content of the announcement displayed in the modal. */
     content: string;
+    /** The author or department issuing the announcement. */
     author: string;
 }
 
@@ -70,6 +84,13 @@ const announcementsData: Announcement[] = [
     }
 ];
 
+/**
+ * A component that displays a list of announcements, news, and events.
+ * Users can filter announcements by category and view details in a modal.
+ *
+ * @param {AnnouncementsProps} props - The component props.
+ * @returns {JSX.Element} The rendered AnnouncementsPage component.
+ */
 export const AnnouncementsPage: React.FC<AnnouncementsProps> = ({ onBack }) => {
     const [filter, setFilter] = useState('All');
     const [selectedItem, setSelectedItem] = useState<Announcement | null>(null);

@@ -8,7 +8,12 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Users, Scale, Landmark, BookOpen } from 'lucide-react';
 
-// --- TIMELINE DIAGRAM ---
+/**
+ * A timeline diagram component that visualizes key historical moments.
+ * Users can click on timeline nodes to view details about each era.
+ *
+ * @returns {JSX.Element} The rendered TimelineDiagram component.
+ */
 export const TimelineDiagram: React.FC = () => {
   const [activeEra, setActiveEra] = useState<string>('1948');
   
@@ -111,6 +116,12 @@ export const TimelineDiagram: React.FC = () => {
 };
 
 // --- STRUCTURE DIAGRAM ---
+/**
+ * A diagram component illustrating the organizational structure of the Union.
+ * It displays cards for the CEC, SRC, and Judiciary with hover effects.
+ *
+ * @returns {JSX.Element} The rendered StructureDiagram component.
+ */
 export const StructureDiagram: React.FC = () => {
   const [hoveredSection, setHoveredSection] = useState<string | null>(null);
 
@@ -191,6 +202,11 @@ export const StructureDiagram: React.FC = () => {
 };
 
 // --- STATS CHART ---
+/**
+ * A chart component displaying the growth of the student population over the years.
+ *
+ * @returns {JSX.Element} The rendered PopulationChart component.
+ */
 export const PopulationChart: React.FC = () => {
     const data = [
         { year: 1948, count: 1, label: 'Pioneers' }, // Normalized

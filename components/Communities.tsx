@@ -13,24 +13,46 @@ const ActivityIcon = ({size}: {size: number}) => (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
 );
 
+/**
+ * Props for the Communities component.
+ */
 interface CommunitiesProps {
+  /** Callback for navigating back to the previous screen. */
   onBack: () => void;
+  /** Callback for selecting a specific club to view details. */
   onClubSelect: (id: string) => void;
 }
 
+/**
+ * Valid categories for classifying clubs and societies.
+ */
 type Category = 'All' | 'Sociocultural' | 'Academic' | 'Religious' | 'Press' | 'Tech' | 'Sports' | 'Politics';
 
+/**
+ * Represents a student club, society, or association.
+ */
 export interface Club {
+    /** Unique identifier for the club. */
     id: string;
+    /** Full name of the club. */
     name: string;
+    /** Optional acronym or abbreviation. */
     acronym?: string;
+    /** The category the club belongs to. */
     category: Category;
+    /** The year the club was founded. */
     founded: string;
+    /** The club's motto or slogan. */
     motto: string;
+    /** A detailed description of the club's mission and activities. */
     description: string;
+    /** A list of key activities or events organized by the club. */
     activities: string[];
+    /** Name of the current president (optional). */
     president?: string;
+    /** Brand color for the club. */
     color: string;
+    /** Icon representing the club. */
     icon: React.ReactNode;
 }
 
@@ -515,6 +537,13 @@ export const clubsData: Club[] = [
 ];
 
 // --- COMPONENT FOR EXPANDABLE ACTIVITY ITEMS ---
+/**
+ * A component to display an expandable card for a club activity.
+ *
+ * @param {object} props - The component props.
+ * @param {string} props.activity - The name of the activity.
+ * @returns {JSX.Element} The rendered ActivityCard component.
+ */
 const ActivityCard: React.FC<{ activity: string }> = ({ activity }) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -571,6 +600,13 @@ interface ClubDetailProps {
     onBack: () => void;
 }
 
+/**
+ * A detailed view component for a specific club.
+ * Displays club information, key activities, and contact options.
+ *
+ * @param {ClubDetailProps} props - The component props.
+ * @returns {JSX.Element} The rendered ClubDetailPage component.
+ */
 export const ClubDetailPage: React.FC<ClubDetailProps> = ({ clubId, onBack }) => {
     const club = clubsData.find(c => c.id === clubId);
 
@@ -719,6 +755,13 @@ export const ClubDetailPage: React.FC<ClubDetailProps> = ({ clubId, onBack }) =>
 
 // --- DIRECTORY LIST ---
 
+/**
+ * A directory page for browsing clubs and communities.
+ * Includes search and filtering capabilities.
+ *
+ * @param {CommunitiesProps} props - The component props.
+ * @returns {JSX.Element} The rendered CommunitiesPage component.
+ */
 export const CommunitiesPage: React.FC<CommunitiesProps> = ({ onBack, onClubSelect }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [activeCategory, setActiveCategory] = useState<Category>('All');

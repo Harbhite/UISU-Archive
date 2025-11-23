@@ -8,11 +8,19 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, CheckCircle, XCircle, RefreshCw, Trophy, ArrowRight, Star } from 'lucide-react';
 
+/**
+ * Represents a trivia question.
+ */
 interface Question {
+    /** Unique identifier for the question. */
     id: number;
+    /** The text of the question. */
     question: string;
+    /** List of possible answer options. */
     options: string[];
-    correct: number; // Index of correct answer
+    /** The index of the correct answer in the options array. */
+    correct: number;
+    /** Explanation or fun fact related to the answer. */
     explanation: string;
 }
 
@@ -54,6 +62,12 @@ const questions: Question[] = [
     }
 ];
 
+/**
+ * A trivia quiz component to test user knowledge about the Union.
+ * Features a start screen, multiple-choice questions, instant feedback, and a results screen.
+ *
+ * @returns {JSX.Element} The rendered TriviaSection component.
+ */
 export const TriviaSection: React.FC = () => {
     const [started, setStarted] = useState(false);
     const [currentQ, setCurrentQ] = useState(0);
