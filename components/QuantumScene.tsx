@@ -8,24 +8,8 @@ import React from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Float, Box, Cylinder, Stars } from '@react-three/drei';
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      ambientLight: any;
-      pointLight: any;
-      spotLight: any;
-      group: any;
-      meshStandardMaterial: any;
-    }
-  }
-}
+// Removed clobbering global JSX declaration to restore standard HTML element types
 
-/**
- * A Three.js scene displaying abstract 3D shapes and stars for the hero section background.
- * Uses floating animations to create a dynamic effect.
- *
- * @returns {JSX.Element} The rendered HeroScene component.
- */
 export const HeroScene: React.FC = () => {
   return (
     <div className="absolute inset-0 z-0 opacity-100 pointer-events-none">
@@ -54,12 +38,6 @@ export const HeroScene: React.FC = () => {
   );
 };
 
-/**
- * A Three.js scene rendering a 3D model of a tower (representing the UI Tower).
- * The tower includes a base, shaft, clock section, and roof.
- *
- * @returns {JSX.Element} The rendered TowerScene component.
- */
 export const TowerScene: React.FC = () => {
   return (
     <div className="w-full h-full absolute inset-0">

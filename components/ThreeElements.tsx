@@ -9,31 +9,9 @@ import { useFrame } from '@react-three/fiber';
 import { Float, Text, MeshDistortMaterial, useCursor } from '@react-three/drei';
 import * as THREE from 'three';
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      group: any;
-      mesh: any;
-      sphereGeometry: any;
-      cylinderGeometry: any;
-      boxGeometry: any;
-      torusGeometry: any;
-      torusKnotGeometry: any;
-      planeGeometry: any;
-      coneGeometry: any;
-      meshStandardMaterial: any;
-      meshBasicMaterial: any;
-      meshNormalMaterial: any;
-    }
-  }
-}
+// Removed clobbering global JSX declaration to restore standard HTML element types
 
-/**
- * A 3D DNA Helix animation representing lineage and history.
- *
- * @param {object} props - Three.js group props.
- * @returns {JSX.Element} The DNAHelix component.
- */
+// 1. DNA Helix (Lineage)
 export const DNAHelix = (props: any) => {
   const group = useRef<THREE.Group>(null);
   useFrame((state) => {
@@ -57,11 +35,11 @@ export const DNAHelix = (props: any) => {
           </mesh>
           <mesh position={[Math.sin(i * 0.5 + Math.PI) * 1.5, 0, Math.cos(i * 0.5 + Math.PI) * 1.5]}>
             <sphereGeometry args={[0.15, 16, 16]} />
-            <meshStandardMaterial color="#002147" emissive="#002147" emissiveIntensity={0.5} />
+            <meshStandardMaterial color="#C5A059" emissive="#C5A059" emissiveIntensity={0.5} />
           </mesh>
           {/* Connecting rod */}
           <mesh rotation={[0, i * 0.5, 0]} position={[0, 0, 0]}>
-            <cylinderGeometry args={[0.02, 0.02, 3, 8]} />
+            <cylinderGeometry args={[0.02, 0.02, 3, 8]} rotation={[0,0, Math.PI/2]} />
             <meshStandardMaterial color="#ccc" opacity={0.3} transparent />
           </mesh>
         </group>
@@ -70,12 +48,7 @@ export const DNAHelix = (props: any) => {
   );
 };
 
-/**
- * A 3D model of a gavel representing the legislative branch or authority.
- *
- * @param {object} props - Three.js group props.
- * @returns {JSX.Element} The GavelModel component.
- */
+// 2. 3D Gavel (Legislative)
 export const GavelModel = (props: any) => {
   const mesh = useRef<THREE.Group>(null);
   useFrame((state) => {
@@ -109,13 +82,7 @@ export const GavelModel = (props: any) => {
   );
 };
 
-/**
- * A 3D model of a scale representing the judiciary branch and justice.
- * The pans animate with a tipping effect.
- *
- * @param {object} props - Three.js group props.
- * @returns {JSX.Element} The ScaleModel component.
- */
+// 3. 3D Scale (Judiciary)
 export const ScaleModel = (props: any) => {
   const group = useRef<THREE.Group>(null);
   const leftPan = useRef<THREE.Group>(null);
@@ -156,25 +123,20 @@ export const ScaleModel = (props: any) => {
             <meshStandardMaterial color="#C5A059" side={THREE.DoubleSide} />
           </mesh>
           {/* Strings */}
-          <mesh position={[0, 0, 0]}><cylinderGeometry args={[0.01, 0.01, 2] as any} /><meshBasicMaterial color="#000" /></mesh>
+          <mesh position={[0, 0, 0]}><cylinderGeometry args={[0.01, 0.01, 2]} /><meshBasicMaterial color="#000" /></mesh>
       </group>
       <group ref={rightPan} position={[1.7, 1.5, 0]}>
           <mesh position={[0, -1, 0]}>
             <sphereGeometry args={[0.6, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
             <meshStandardMaterial color="#C5A059" side={THREE.DoubleSide} />
           </mesh>
-          <mesh position={[0, 0, 0]}><cylinderGeometry args={[0.01, 0.01, 2] as any} /><meshBasicMaterial color="#000" /></mesh>
+          <mesh position={[0, 0, 0]}><cylinderGeometry args={[0.01, 0.01, 2]} /><meshBasicMaterial color="#000" /></mesh>
       </group>
     </group>
   );
 };
 
-/**
- * A 3D pillar model representing the executive branch or stability.
- *
- * @param {object} props - Three.js group props.
- * @returns {JSX.Element} The PillarModel component.
- */
+// 4. 3D Pillar (Executive/CEC)
 export const PillarModel = (props: any) => {
   return (
     <group {...props}>
@@ -194,13 +156,7 @@ export const PillarModel = (props: any) => {
   );
 };
 
-/**
- * A floating 3D book model representing the document library.
- * Reacts to hover events by slightly opening.
- *
- * @param {object} props - Three.js group props.
- * @returns {JSX.Element} The FloatingBook component.
- */
+// 5. Floating Book (Library)
 export const FloatingBook = (props: any) => {
   const group = useRef<THREE.Group>(null);
   const [hovered, setHover] = useState(false);
@@ -239,12 +195,7 @@ export const FloatingBook = (props: any) => {
   );
 };
 
-/**
- * A spinning 3D coin model representing the treasurer or finance.
- *
- * @param {object} props - Three.js mesh props.
- * @returns {JSX.Element} The SpinningCoin component.
- */
+// 6. Spinning Coin (Treasurer)
 export const SpinningCoin = (props: any) => {
     const ref = useRef<THREE.Mesh>(null);
     useFrame((state) => {
@@ -258,11 +209,7 @@ export const SpinningCoin = (props: any) => {
     )
 }
 
-/**
- * A pulsing 3D orb using mesh distortion for visual effect.
- *
- * @returns {JSX.Element} The PulsingOrb component.
- */
+// 7. Pulsing Orb (Footer)
 export const PulsingOrb = () => {
     const ref = useRef<THREE.Mesh>(null);
     useFrame((state) => {
@@ -279,16 +226,7 @@ export const PulsingOrb = () => {
     )
 }
 
-/**
- * An animated 3D bar for charts, growing from the bottom up.
- *
- * @param {object} props - Component props.
- * @param {number} props.height - Target height of the bar.
- * @param {string} props.color - Color of the bar.
- * @param {object} props.position - Position vector [x, y, z].
- * @param {number} props.delay - Delay before animation starts (not currently used in logic but kept for interface).
- * @returns {JSX.Element} The AnimatedBar component.
- */
+// 8. Animated Bar (Stats)
 export const AnimatedBar = ({ height, color, position, delay }: any) => {
     const ref = useRef<THREE.Mesh>(null);
     useFrame((state) => {
@@ -305,12 +243,7 @@ export const AnimatedBar = ({ height, color, position, delay }: any) => {
     )
 }
 
-/**
- * A rotating 3D torus knot representing the Aluta spirit.
- *
- * @param {object} props - Three.js mesh props.
- * @returns {JSX.Element} The AlutaShape component.
- */
+// 9. Torus Knot (Aluta Spirit)
 export const AlutaShape = (props: any) => {
     const ref = useRef<THREE.Mesh>(null);
     useFrame((state) => {
@@ -327,12 +260,7 @@ export const AlutaShape = (props: any) => {
     )
 }
 
-/**
- * A 3D map pin that bounces and scales on hover.
- *
- * @param {object} props - Component props including color and Three.js group props.
- * @returns {JSX.Element} The MapPin3D component.
- */
+// 10. 3D Map Pin
 export const MapPin3D = ({ color, ...props }: any) => {
     const ref = useRef<THREE.Group>(null);
     const [hovered, setHover] = useState(false);
@@ -360,11 +288,7 @@ export const MapPin3D = ({ color, ...props }: any) => {
     )
 }
 
-/**
- * A moving wireframe grid for the ground effect.
- *
- * @returns {JSX.Element} The WavingGrid component.
- */
+// 11. Waving Grid (Floor)
 export const WavingGrid = () => {
     const ref = useRef<THREE.Mesh>(null);
     useFrame((state) => {
