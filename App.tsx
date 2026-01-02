@@ -1,21 +1,22 @@
 
+
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
 */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { TimelineDiagram, StructureDiagram, PopulationChart } from './components/Diagrams.tsx';
-import { CampusMap, HallGrid } from './components/CampusMap.tsx';
-import { GovernancePage } from './components/Governance.tsx';
-import { PastLeadersPage } from './components/PastLeaders.tsx';
-import { DocumentLibrary } from './components/DocumentLibrary.tsx';
-import { AnnouncementsPage } from './components/Announcements.tsx';
-import { TriviaSection } from './components/Trivia.tsx';
-import { CommunitiesPage, ClubDetailPage } from './components/Communities.tsx';
-import { TowerScene } from './components/QuantumScene.tsx';
-import { ToolsPage } from './components/Tools.tsx';
-import { OurPeoplePage } from './components/OurPeople.tsx';
+import { TimelineDiagram, StructureDiagram, PopulationChart } from './components/Diagrams';
+import { CampusMap, HallGrid } from './components/CampusMap';
+import { GovernancePage } from './components/Governance';
+import { PastLeadersPage } from './components/PastLeaders';
+import { DocumentLibrary } from './components/DocumentLibrary';
+import { AnnouncementsPage } from './components/Announcements';
+import { TriviaSection } from './components/Trivia';
+import { CommunitiesPage, ClubDetailPage } from './components/Communities';
+import { TowerScene } from './components/QuantumScene';
+import { ToolsPage } from './components/Tools';
+import { OurPeoplePage } from './components/OurPeople';
 import { Menu, X, BookOpen, ArrowRight, Library, Star, MapPin, Scale, Megaphone, ChevronDown, Users, Mail, Check, Wrench, Quote, Award, ShieldCheck, Fingerprint } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 
@@ -135,288 +136,350 @@ const RevealHeader = ({ children, className }: { children?: React.ReactNode, cla
   </motion.h2>
 );
 
-// Added the main App component and exported it as default
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<'home' | 'governance' | 'leaders' | 'docs' | 'announcements' | 'communities' | 'club-detail' | 'tools' | 'people'>('home');
+  const [view, setView] = useState<'home' | 'governance' | 'history' | 'documents' | 'announcements' | 'communities' | 'club-detail' | 'tools' | 'people'>('home');
+  const [menuOpen, setMenuOpen] = useState(false);
   const [selectedClubId, setSelectedClubId] = useState<string | null>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { scrollYProgress } = useScroll();
+  
+  const scrollRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: scrollRef,
+    offset: ["start end", "end start"]
+  });
 
-  const navigateTo = (page: any) => {
-    setCurrentPage(page);
-    setIsMenuOpen(false);
-    window.scrollTo(0, 0);
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [view]);
+
+  const scrollToSection = (id: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    setMenuOpen(false);
+    if (view !== 'home') {
+      setView('home');
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+            const headerOffset = 100;
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+        }
+      }, 100);
+    } else {
+        const element = document.getElementById(id);
+        if (element) {
+            const headerOffset = 100;
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+        }
+    }
   };
 
-  const openClubDetail = (id: string) => {
-    setSelectedClubId(id);
-    setCurrentPage('club-detail');
-    window.scrollTo(0, 0);
-  };
-
-  if (currentPage === 'governance') return <GovernancePage onBack={() => navigateTo('home')} />;
-  if (currentPage === 'leaders') return <PastLeadersPage onBack={() => navigateTo('home')} />;
-  if (currentPage === 'docs') return <DocumentLibrary onBack={() => navigateTo('home')} />;
-  if (currentPage === 'announcements') return <AnnouncementsPage onBack={() => navigateTo('home')} />;
-  if (currentPage === 'communities') return <CommunitiesPage onBack={() => navigateTo('home')} onClubSelect={openClubDetail} />;
-  if (currentPage === 'club-detail' && selectedClubId) return <ClubDetailPage clubId={selectedClubId} onBack={() => navigateTo('communities')} />;
-  if (currentPage === 'tools') return <ToolsPage onBack={() => navigateTo('home')} />;
-  if (currentPage === 'people') return <OurPeoplePage onBack={() => navigateTo('home')} />;
+  if (view === 'governance') return <GovernancePage onBack={() => setView('home')} />;
+  if (view === 'history') return <PastLeadersPage onBack={() => setView('home')} />;
+  if (view === 'documents') return <DocumentLibrary onBack={() => setView('home')} />;
+  if (view === 'announcements') return <AnnouncementsPage onBack={() => setView('home')} />;
+  if (view === 'tools') return <ToolsPage onBack={() => setView('home')} />;
+  if (view === 'people') return <OurPeoplePage onBack={() => setView('home')} />;
+  if (view === 'communities') return <CommunitiesPage onBack={() => setView('home')} onClubSelect={(id) => { setSelectedClubId(id); setView('club-detail'); }} />;
+  if (view === 'club-detail' && selectedClubId) return <ClubDetailPage clubId={selectedClubId} onBack={() => setView('communities')} />;
 
   return (
-    <div className="min-h-screen bg-white text-ui-blue font-sans selection:bg-nobel-gold selection:text-ui-blue">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-nobel-gold selection:text-white overflow-x-hidden">
       <Marquee />
-      
-      {/* Navigation */}
-      <nav className="fixed top-12 left-0 right-0 z-[100] px-6 md:px-12 pointer-events-none">
-        <div className="max-w-7xl mx-auto flex justify-between items-center bg-white/80 backdrop-blur-xl border border-ui-blue/10 p-4 md:p-6 pointer-events-auto shadow-2xl">
-          <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigateTo('home')}>
-             <div className="w-10 h-10 bg-ui-blue flex items-center justify-center text-nobel-gold shadow-lg">
-                <Star size={24} fill="currentColor" />
-             </div>
-             <div>
-                <h1 className="text-xl font-serif font-bold tracking-tight leading-none">UISU</h1>
-                <p className="text-[10px] uppercase tracking-[0.3em] font-bold opacity-40">Digital Archive</p>
-             </div>
-          </div>
+      <nav className="fixed top-14 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl z-40">
+        <div className="bg-ui-blue/95 backdrop-blur-md text-white rounded-none px-6 py-3 flex justify-between items-center shadow-2xl border border-white/10">
+            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider hover:text-nobel-gold transition-colors">
+                <AnimatePresence mode="wait">
+                    {menuOpen ? (
+                        <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}><X size={18}/></motion.div>
+                    ) : (
+                        <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}><Menu size={18}/></motion.div>
+                    )}
+                </AnimatePresence>
+                <span className="hidden md:inline">Menu</span>
+            </motion.button>
 
-          <div className="hidden lg:flex items-center gap-12 text-[10px] font-bold uppercase tracking-[0.2em]">
-            <button onClick={() => navigateTo('governance')} className="hover:text-nobel-gold transition-colors">Governance</button>
-            <button onClick={() => navigateTo('leaders')} className="hover:text-nobel-gold transition-colors">Leaders</button>
-            <button onClick={() => navigateTo('docs')} className="hover:text-nobel-gold transition-colors">Library</button>
-            <button onClick={() => navigateTo('communities')} className="hover:text-nobel-gold transition-colors">Clubs</button>
-            <button onClick={() => navigateTo('people')} className="hover:text-nobel-gold transition-colors">People</button>
-            <button onClick={() => navigateTo('tools')} className="bg-ui-blue text-white px-6 py-3 hover:bg-nobel-gold hover:text-ui-blue transition-all flex items-center gap-2">
-                <Wrench size={12} /> Matrix
-            </button>
-          </div>
+            <motion.div whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }} transition={{ duration: 0.5 }} className="absolute left-1/2 -translate-x-1/2 flex items-center gap-3 cursor-pointer" onClick={() => setView('home')}>
+                <img src="/uisu-logo.png" alt="UISU Logo" className="h-14 w-auto object-contain drop-shadow-md" />
+                <span className="font-serif font-bold text-2xl tracking-tight hidden md:inline text-white">UISU</span>
+            </motion.div>
 
-          <button className="lg:hidden p-2 text-ui-blue" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
+            <div className="flex items-center gap-4">
+                <button onClick={() => setView('tools')} className="hidden md:flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-nobel-gold transition-colors">
+                    <Wrench size={14} /> Tools
+                </button>
+                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={scrollToSection('introduction')} className="bg-nobel-gold text-ui-blue px-5 py-2 rounded-none text-xs font-bold uppercase tracking-widest hover:bg-white transition-colors border border-nobel-gold shadow-md">
+                    Enter
+                </motion.button>
+            </div>
         </div>
       </nav>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 bg-ui-blue z-[90] flex flex-col items-center justify-center p-12 lg:hidden"
-          >
-             <div className="flex flex-col gap-8 text-center">
-                {['governance', 'leaders', 'docs', 'communities', 'announcements', 'people', 'tools'].map((page) => (
-                    <button 
-                        key={page}
-                        onClick={() => navigateTo(page as any)}
-                        className="text-white text-4xl font-serif capitalize hover:text-nobel-gold transition-colors"
-                    >
-                        {page}
-                    </button>
-                ))}
-             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {menuOpen && (
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="fixed top-28 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-white rounded-none shadow-2xl z-30 p-8 flex flex-col gap-6 text-center border border-slate-200">
+            <button onClick={() => {setMenuOpen(false); setView('people')}} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">Our People</button>
+            <button onClick={() => {setMenuOpen(false); setView('announcements')}} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">News & Events</button>
+            <button onClick={() => {setMenuOpen(false); setView('tools')}} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">Uite Matrix</button>
+            <a href="#history" onClick={scrollToSection('history')} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">History</a>
+            <button onClick={() => {setMenuOpen(false); setView('governance')}} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">Governance</button>
+            <button onClick={() => {setMenuOpen(false); setView('documents')}} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">Library</button>
+            <button onClick={() => {setMenuOpen(false); setView('communities')}} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">Clubs & Societies</button>
+        </motion.div>
+      )}
 
-      {/* Hero Section */}
-      <header className="relative h-screen flex items-center justify-center overflow-hidden bg-ui-blue pt-20">
-        <div className="absolute inset-0 z-0">
-          <TowerScene />
-          <div className="absolute inset-0 bg-gradient-to-b from-ui-blue/20 via-transparent to-ui-blue/90"></div>
-        </div>
-
-        <div className="container mx-auto px-6 relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <span className="inline-block px-4 py-1 bg-nobel-gold text-ui-blue text-[10px] font-bold uppercase tracking-[0.4em] mb-8">Established 1948</span>
-            <h1 className="text-7xl md:text-[10rem] font-serif text-white leading-none tracking-tighter mb-8">
-              Aluta <br/> <span className="italic text-nobel-gold opacity-90">Continua</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-white/60 font-light max-w-2xl mx-auto mb-12 leading-relaxed">
-              The living history of student activism, intellectual unionism, and the pursuit of excellence at Nigeria's premier university.
-            </p>
-            <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-              <button onClick={() => navigateTo('docs')} className="group flex items-center gap-4 bg-white text-ui-blue px-10 py-5 font-bold uppercase tracking-widest text-xs hover:bg-nobel-gold transition-all shadow-2xl">
-                Explore The Archive <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
-              </button>
-              <button onClick={() => navigateTo('announcements')} className="flex items-center gap-4 border border-white/20 text-white px-10 py-5 font-bold uppercase tracking-widest text-xs hover:bg-white/10 transition-all">
-                Latest Dispatch <Megaphone size={16} />
-              </button>
+      <header className="relative min-h-screen flex flex-col items-center justify-center pt-32 pb-20 overflow-hidden bg-white">
+        <div className="absolute inset-0 opacity-20 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-multiply"></div>
+        <div className="container mx-auto px-6 text-center relative z-10">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-6">
+                <motion.h1 initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="text-7xl md:text-9xl font-bold tracking-tighter text-ui-blue">UNION</motion.h1>
+                <motion.div animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }} className="text-6xl md:text-8xl text-nobel-gold"><Star size={80} fill="currentColor" /></motion.div>
+                <motion.h1 initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="text-7xl md:text-9xl font-serif italic text-ui-blue">Legacy</motion.h1>
             </div>
-          </motion.div>
-        </div>
-
-        <div className="absolute bottom-12 left-12 hidden md:block">
-            <div className="flex items-center gap-4 text-white/20 text-[10px] font-bold uppercase tracking-[0.5em] rotate-90 origin-left">
-                Scroll to delve <ArrowRight size={12} />
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="text-xl md:text-2xl text-slate-600 max-w-2xl mx-auto mb-16 leading-relaxed">
+                Platform packed with <span className="bg-slate-100 px-2 rounded-none text-ui-blue font-medium">History</span> & <span className="bg-slate-100 px-2 rounded-none text-ui-blue font-medium">Intellectualism</span>. Preserving the Aluta spirit since 1948.
+            </motion.p>
+            
+            {/* Horizontal Card Scroller with Parallax */}
+            <div ref={scrollRef} className="w-full relative mt-12 md:mt-24">
+                <div className="flex overflow-x-auto gap-8 pb-12 px-6 no-scrollbar snap-x snap-mandatory">
+                    <div className="flex-shrink-0 w-[10vw] hidden md:block"></div>
+                    <ParallaxCard index={0} progress={scrollYProgress} title="Our People" subtitle="Current Leadership" icon={Users} color="bg-ui-blue" onClick={() => setView('people')} />
+                    <ParallaxCard index={1} progress={scrollYProgress} title="Uite Matrix" subtitle="Student Utility System" icon={Wrench} color="bg-zinc-900" onClick={() => setView('tools')} />
+                    <ParallaxCard index={2} progress={scrollYProgress} title="Announcements" subtitle="News & Events" icon={Megaphone} color="bg-red-900" onClick={() => setView('announcements')} />
+                    <ParallaxCard index={3} progress={scrollYProgress} title="Union History" subtitle="1948 - Present" icon={BookOpen} color="bg-slate-800" onClick={() => scrollToSection('history')({preventDefault: () => {}} as any)} />
+                    <ParallaxCard index={4} progress={scrollYProgress} title="Communities" subtitle="Clubs & Societies" icon={Users} color="bg-emerald-800" onClick={() => setView('communities')} />
+                    <ParallaxCard index={5} progress={scrollYProgress} title="The Republics" subtitle="Halls of Residence" icon={MapPin} color="bg-ui-dark" onClick={() => scrollToSection('halls')({preventDefault: () => {}} as any)} />
+                    <div className="flex-shrink-0 w-[10vw] hidden md:block"></div>
+                </div>
+                {/* Scroll Indicator */}
+                <div className="flex justify-center gap-4 mt-8 items-center">
+                    <div className="w-24 h-1 bg-ui-blue/5 rounded-none overflow-hidden relative border border-slate-100">
+                        <motion.div 
+                            style={{ scaleX: scrollYProgress }} 
+                            className="absolute inset-0 bg-nobel-gold origin-left"
+                        />
+                    </div>
+                    <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-300">Archive Navigation</span>
+                </div>
             </div>
+
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, y: [0, 10, 0] }} transition={{ delay: 2, y: { duration: 1.5, repeat: Infinity } }} className="absolute bottom-8 left-1/2 -translate-x-1/2 text-slate-400 flex flex-col items-center gap-2 cursor-pointer" onClick={scrollToSection('introduction')}>
+                <span className="text-[10px] uppercase tracking-widest font-bold">Scroll</span>
+                <ChevronDown size={20} />
+            </motion.div>
         </div>
       </header>
 
-      {/* Quick Access Matrix Section */}
-      <section className="py-24 bg-slate-50">
-        <div className="container mx-auto px-6">
-          <RevealHeader className="text-5xl md:text-7xl font-serif mb-20 text-center">Foundations of <br/><span className="italic text-slate-300">Intellectualism</span></RevealHeader>
-          
-          <div className="flex overflow-x-auto gap-8 pb-12 snap-x hide-scrollbar">
-            <ParallaxCard 
-              title="Union Governance" 
-              subtitle="The Three Arms" 
-              icon={Scale} 
-              color="bg-ui-blue" 
-              onClick={() => navigateTo('governance')}
-              progress={scrollYProgress}
-              index={0}
-            />
-             <ParallaxCard 
-              title="Document Library" 
-              subtitle="Primary Sources" 
-              icon={Library} 
-              color="bg-stone-800" 
-              onClick={() => navigateTo('docs')}
-              progress={scrollYProgress}
-              index={1}
-            />
-             <ParallaxCard 
-              title="Past Leaders" 
-              subtitle="Hall of Fame" 
-              icon={Users} 
-              color="bg-ui-blue" 
-              onClick={() => navigateTo('leaders')}
-              progress={scrollYProgress}
-              index={2}
-            />
-             <ParallaxCard 
-              title="Student Tools" 
-              subtitle="Matrix Services" 
-              icon={Wrench} 
-              color="bg-stone-800" 
-              onClick={() => navigateTo('tools')}
-              progress={scrollYProgress}
-              index={3}
-            />
+      <main>
+        {/* ... existing sections ... */}
+        <section id="introduction" className="py-24 bg-slate-50 relative overflow-hidden">
+           <div className="absolute top-0 right-0 w-96 h-96 bg-nobel-gold/10 rounded-none blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+          <div className="container mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-12 items-start relative z-10">
+            <div className="md:col-span-5">
+              <div className="inline-block mb-3 px-3 py-1 bg-ui-blue/10 text-ui-blue text-xs font-bold tracking-widest uppercase rounded-none border border-ui-blue/10">About Us</div>
+              <RevealHeader className="font-serif text-5xl md:text-6xl mb-6 leading-tight text-ui-blue">The Father of <br/><span className="italic text-nobel-gold">Intellectual Unionism.</span></RevealHeader>
+              <p className="text-lg text-slate-500 font-medium">First and Best.</p>
+            </div>
+            <div className="md:col-span-7 text-xl text-slate-800 leading-relaxed space-y-6 font-light">
+              <p>Founded in 1948, the University of Ibadan Students' Union is the <strong>oldest and most prestigious</strong> student body in Nigeria.</p>
+              <p>From the anti-colonial struggles to the fight for democracy, Uites have always stood on the side of the people. This archive serves to document that rich history, structure, and culture.</p>
+              <div className="pt-4"><button onClick={() => scrollToSection('history')({preventDefault: () => {}} as any)} className="group flex items-center gap-2 text-ui-blue font-bold uppercase tracking-widest text-sm">Start Exploring <ArrowRight className="group-hover:translate-x-2 transition-transform"/></button></div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Timeline Section */}
-      <section className="py-32">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-             <div>
-                <RevealHeader className="text-5xl md:text-8xl font-serif mb-8 leading-tight">The <br/> Struggle <br/> <span className="italic text-slate-300">Timeline</span></RevealHeader>
-                <p className="text-xl text-slate-600 font-light mb-12 leading-relaxed">
-                  From the colonial foundations to the modern digital era, the Students' Union has remained the conscience of the university.
-                </p>
-                <button onClick={() => navigateTo('leaders')} className="text-xs font-bold uppercase tracking-[0.4em] text-ui-blue border-b-2 border-nobel-gold pb-2 hover:text-nobel-gold transition-colors">View All Administrations</button>
+        {/* ... rest of the App.tsx content ... */}
+        <section className="py-24 bg-white border-y border-slate-100 overflow-hidden">
+            <div className="container mx-auto px-6">
+                <div className="text-center mb-16">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-400 mb-4 block">Alumni Legacy</span>
+                    <RevealHeader className="font-serif text-5xl text-ui-blue">Giants of <span className="italic text-slate-300">Aluta</span></RevealHeader>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+                    {[
+                        { name: "Wole Soyinka", quote: "The man dies in all who keep silent in the face of tyranny.", role: "Sigmate & Nobel Laureate" },
+                        { name: "Segun Okeowo", quote: "Education is a right, not a privilege for the few.", role: "1978 Union President" },
+                        { name: "Kunle Adepeju", quote: "His sacrifice fueled the fire of student consciousness forever.", role: "Union Martyr" }
+                    ].map((giant, i) => (
+                        <motion.div 
+                            key={i}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.1 }}
+                            className="p-8 border-l-2 border-nobel-gold bg-slate-50 flex flex-col justify-between h-full group"
+                        >
+                            <div>
+                                <Quote className="text-nobel-gold/20 mb-6 group-hover:text-nobel-gold transition-colors duration-500" size={40} />
+                                <p className="text-lg font-serif italic text-ui-blue leading-relaxed mb-8">"{giant.quote}"</p>
+                            </div>
+                            <div>
+                                <h4 className="font-bold text-sm uppercase tracking-widest text-ui-blue">{giant.name}</h4>
+                                <p className="text-xs text-slate-400 uppercase tracking-tighter mt-1">{giant.role}</p>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+
+        <section id="history" className="py-24 bg-slate-50">
+            <div className="container mx-auto px-6">
+                <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+                    <div className="max-w-2xl">
+                        <RevealHeader className="font-serif text-5xl text-ui-blue mb-6">Historical Path</RevealHeader>
+                        <p className="text-lg text-slate-600 leading-relaxed font-light">The history of the Union is written in the ink of intellectualism and the sweat of struggle. Trace the defining moments.</p>
+                    </div>
+                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setView('history')} className="shrink-0 px-8 py-3 bg-ui-blue text-white rounded-none text-xs font-bold uppercase tracking-widest border border-ui-blue shadow-lg">Archives List</motion.button>
+                </div>
+                <TimelineDiagram />
+            </div>
+        </section>
+
+        <section className="py-24 bg-ui-blue text-white relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5 mix-blend-overlay"></div>
+            <div className="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 relative z-10">
+                <div>
+                    <span className="text-nobel-gold text-[10px] font-bold uppercase tracking-[0.4em] mb-4 block">Union Lore</span>
+                    <RevealHeader className="font-serif text-5xl mb-8">The Union <span className="italic text-slate-400">Symbols</span></RevealHeader>
+                    <div className="space-y-12">
+                        <div className="flex gap-6">
+                            <div className="w-12 h-12 flex-shrink-0 bg-white/10 flex items-center justify-center border border-white/10"><Award className="text-nobel-gold" /></div>
+                            <div>
+                                <h4 className="font-bold uppercase tracking-widest text-sm mb-2">The Shield</h4>
+                                <p className="text-slate-400 text-sm font-light leading-relaxed">Representing the defense of student rights and the preservation of welfare since the 1948 charter.</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-6">
+                            <div className="w-12 h-12 flex-shrink-0 bg-white/10 flex items-center justify-center border border-white/10"><ShieldCheck className="text-nobel-gold" /></div>
+                            <div>
+                                <h4 className="font-bold uppercase tracking-widest text-sm mb-2">The Motto</h4>
+                                <p className="text-slate-400 text-sm font-light leading-relaxed">"Intellectualism and Welfare" — our guiding light in every negotiation and movement.</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-6">
+                            <div className="w-12 h-12 flex-shrink-0 bg-white/10 flex items-center justify-center border border-white/10"><Star className="text-nobel-gold" /></div>
+                            <div>
+                                <h4 className="font-bold uppercase tracking-widest text-sm mb-2">The First & Best</h4>
+                                <p className="text-slate-400 text-sm font-light leading-relaxed">A standard of excellence that permeates every faculty, hall, and student endeavor.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-white/5 border border-white/10 p-12 relative overflow-hidden backdrop-blur-sm group">
+                    <div className="absolute -top-12 -right-12 text-white opacity-5 rotate-12 group-hover:rotate-45 transition-transform duration-1000"><Star size={300} fill="currentColor" /></div>
+                    <h3 className="font-serif text-2xl text-nobel-gold mb-8 uppercase tracking-widest border-b border-white/10 pb-4">Union Anthem</h3>
+                    <div className="font-serif text-lg text-slate-300 italic space-y-6 leading-relaxed">
+                        <p>The First and the Best in the land,<br/>Forever we'll stand hand in hand,<br/>With truth and with knowledge we'll lead,<br/>Meeting every student's need.</p>
+                        <p>Aluta! Continua!<br/>Our struggle is not in vain,<br/>Victoria! Ascerta!<br/>The Union shall rise again.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section className="py-24 bg-white">
+            <div className="container mx-auto px-6 relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                     <div className="order-2 lg:order-1 w-full"><StructureDiagram /></div>
+                     <div className="order-1 lg:order-2">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-ui-blue text-white text-[10px] font-bold tracking-widest uppercase rounded-none mb-6">GOVERNANCE</div>
+                        <RevealHeader className="font-serif text-5xl mb-6 text-ui-blue">Power Structure</RevealHeader>
+                        <p className="text-xl text-slate-500 mb-6 leading-relaxed font-light italic">Checks, balances, and constitutional integrity.</p>
+                        <p className="text-lg text-slate-400 leading-relaxed mb-8 font-light">The <strong>CEC</strong> executes, the <strong>SRC</strong> legislates, and the <strong>Judiciary</strong> interprets. A model republic within the ivory tower.</p>
+                        <button onClick={() => setView('governance')} className="flex items-center gap-2 text-nobel-gold font-bold uppercase tracking-wider text-xs hover:text-ui-blue transition-colors group">Read Legal Framework <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" /></button>
+                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="halls" className="py-24 bg-slate-50">
+          <div className="container mx-auto px-6">
+             <div className="text-center mb-16">
+                <RevealHeader className="font-serif text-5xl mb-4 text-ui-blue uppercase tracking-tighter">The Nations</RevealHeader>
+                <p className="text-xs text-slate-400 uppercase tracking-[0.5em] font-bold">Halls of Residence</p>
              </div>
-             <TimelineDiagram />
+             <div className="max-w-6xl mx-auto"><CampusMap /><HallGrid /></div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Structure Section */}
-      <section className="py-32 bg-ui-blue text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-nobel-gold opacity-5 skew-x-12 translate-x-20"></div>
-        <div className="container mx-auto px-6">
-            <div className="max-w-4xl mx-auto text-center mb-24">
-                <RevealHeader className="text-5xl md:text-7xl font-serif mb-8">Structural Integrity</RevealHeader>
-                <p className="text-white/60 text-lg font-light leading-relaxed italic">"Justice and welfare through accountability."</p>
-            </div>
-            <StructureDiagram />
-        </div>
-      </section>
+        <section className="py-32 bg-white relative overflow-hidden border-t border-slate-100">
+             <div className="container mx-auto px-6 text-center max-w-4xl">
+                <div className="w-16 h-1 bg-nobel-gold mx-auto mb-12"></div>
+                <RevealHeader className="text-5xl md:text-6xl font-serif text-ui-blue leading-tight mb-12">Digitizing the <span className="italic text-slate-300">Intellectual Vanguard</span> for the Next Generation.</RevealHeader>
+                <p className="text-xl text-slate-500 font-light leading-relaxed mb-16">The UISU Archive is not just a repository of dates; it is a live blueprint of how the "First and Best" navigated the currents of history. We preserve the legacy so that the future can build on a solid foundation of consciousness.</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    {[
+                        { label: "Founded", val: "1948" },
+                        { label: "Documents", val: "12,000+" },
+                        { label: "Presidents", val: "76+" },
+                        { label: "Students", val: "35k" }
+                    ].map((stat, i) => (
+                        <div key={i} className="group">
+                            <div className="text-3xl font-serif text-ui-blue group-hover:text-nobel-gold transition-colors">{stat.val}</div>
+                            <div className="text-[10px] font-bold uppercase tracking-widest text-slate-300 mt-2">{stat.label}</div>
+                        </div>
+                    ))}
+                </div>
+             </div>
+             <Fingerprint className="absolute bottom-[-10%] right-[-5%] text-slate-50 size-96 rotate-12" />
+        </section>
 
-      {/* Campus Map Section */}
-      <section className="py-32 bg-slate-50">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-            <div className="max-w-2xl">
-              <RevealHeader className="text-5xl md:text-7xl font-serif mb-6">Halls of <br/><span className="italic text-slate-300">Residence</span></RevealHeader>
-              <p className="text-slate-500 font-light text-lg">Every hall carries a legacy. Explore the history, motto, and culture of UI's residential units.</p>
-            </div>
-            <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                <MapPin size={16} /> Campus Geographic Matrix
-            </div>
-          </div>
-          
-          <CampusMap />
-          <HallGrid />
-        </div>
-      </section>
-
-      {/* Trivia Section */}
-      <TriviaSection />
-
-      {/* Statistics Section */}
-      <section className="py-32">
-        <div className="container mx-auto px-6">
-           <PopulationChart />
-        </div>
-      </section>
-
-      {/* Footer Section */}
-      <footer className="bg-ui-blue text-white pt-32 pb-12 relative overflow-hidden">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 mb-32">
-            <div>
-               <h2 className="text-6xl md:text-8xl font-serif mb-12">Preserve <br/> The <span className="italic text-nobel-gold">Legacy</span></h2>
-               <p className="text-white/40 text-lg font-light max-w-md mb-12 leading-relaxed">
-                 The UISU Digital Archive is a community-driven project. Help us document the struggle and the triumphs of the greatest Uites.
-               </p>
-               
-               <div className="space-y-8">
-                  <div className="flex items-center gap-6">
-                    <div className="w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center text-nobel-gold">
-                      <Mail size={20} />
+        <section className="py-24 bg-slate-50 border-t border-slate-200"><div className="container mx-auto px-6"><div className="max-w-4xl mx-auto"><PopulationChart /></div></div></section>
+        <TriviaSection />
+        
+        <section className="py-24 bg-white border-t border-slate-200">
+             <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-12">
+                <div className="md:col-span-5 relative min-h-[400px] bg-slate-50 rounded-none overflow-hidden shadow-sm border border-slate-200 group">
+                    <TowerScene />
+                    <div className="absolute inset-0 bg-ui-blue/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div className="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-sm p-4 rounded-none border border-slate-200 text-center">
+                        <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Iconic Architecture</span>
+                        <p className="font-serif text-lg text-ui-blue">The Tower of Ibadan</p>
                     </div>
+                </div>
+                <div className="md:col-span-7 flex flex-col justify-center">
+                    <RevealHeader className="font-serif text-5xl mb-8 text-ui-blue">Campus Culture</RevealHeader>
+                    <p className="text-xl text-slate-600 mb-8 leading-relaxed font-light">Life as a Uite is unique. From the gyration at the SUB to the quiet study sessions at Kenneth Dike Library. The halls are nations with their own rich traditions.</p>
+                    <div className="p-8 bg-slate-50 border-l-4 border-nobel-gold rounded-none shadow-inner">
+                        <p className="font-serif italic text-2xl text-ui-blue mb-4 leading-relaxed">"The greatest weapon against tyranny is the sharp mind of the intellectual."</p>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-300">System Command Vanguard</p>
+                    </div>
+                </div>
+             </div>
+        </section>
+
+        <footer className="bg-ui-blue text-white pt-20 pb-10 border-t border-white/10 relative overflow-hidden">
+            <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#C5A059 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
+            <div className="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <div><ContactForm /></div>
+                <div className="flex flex-col justify-between h-full py-4">
                     <div>
-                      <div className="text-[10px] font-bold uppercase tracking-widest text-white/30">Secretariat</div>
-                      <div className="text-lg">archive@uisu.ng</div>
+                        <div className="flex items-center gap-3 mb-6">
+                            <img src="/uisu-logo.png" alt="UISU Logo" className="h-12 w-auto brightness-0 invert" />
+                            <span className="font-serif text-3xl font-bold">UISU Archive</span>
+                        </div>
+                        <p className="text-slate-400 text-lg leading-relaxed mb-8 max-w-md font-light">Preserving the history, culture, and intellectual heritage of the University of Ibadan Students' Union. First and Best.</p>
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-4 text-slate-300"><MapPin size={20} className="text-nobel-gold" /><span>Kunle Adepeju Building, University of Ibadan</span></div>
+                            <div className="flex items-center gap-4 text-slate-300"><Mail size={20} className="text-nobel-gold" /><span>archive@uisu.org</span></div>
+                        </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-6">
-                    <div className="w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center text-nobel-gold">
-                      <Megaphone size={20} />
+                    <div className="mt-12 flex gap-8 text-xs font-bold uppercase tracking-[0.3em] text-slate-500">
+                        <a href="#" className="hover:text-nobel-gold transition-colors">Credits</a>
+                        <a href="#" className="hover:text-nobel-gold transition-colors">Legal</a>
+                        <a href="#" className="hover:text-nobel-gold transition-colors">Sitemap</a>
                     </div>
-                    <div>
-                      <div className="text-[10px] font-bold uppercase tracking-widest text-white/30">Publicity</div>
-                      <div className="text-lg">@UISU_Official</div>
-                    </div>
-                  </div>
-               </div>
+                </div>
             </div>
-
-            <div className="flex justify-center lg:justify-end">
-              <ContactForm />
+            <div className="container mx-auto px-6 mt-16 pt-8 border-t border-white/10 text-center text-[10px] uppercase tracking-widest text-slate-600 flex justify-between items-center">
+                <span>&copy; {new Date().getFullYear()} University of Ibadan Students' Union.</span>
+                <span className="hidden md:inline">Aluta Continua, Victoria Ascerta.</span>
             </div>
-          </div>
-
-          <div className="border-t border-white/5 pt-12 flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex items-center gap-4">
-               <div className="w-10 h-10 bg-nobel-gold text-ui-blue flex items-center justify-center font-bold">U</div>
-               <div className="text-[10px] font-bold uppercase tracking-[0.5em] text-white/20">© 2024 UISU Digital Secretariat</div>
-            </div>
-            
-            <div className="flex gap-12 text-[9px] font-bold uppercase tracking-widest text-white/30">
-               <button className="hover:text-white transition-colors">Privacy Protocol</button>
-               <button className="hover:text-white transition-colors">Access Policy</button>
-               <button className="hover:text-white transition-colors">Legal Charter</button>
-            </div>
-
-            <div className="flex items-center gap-4">
-                <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/10">Engineered for Excellence</span>
-                <Fingerprint size={16} className="text-white/5" />
-            </div>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      </main>
     </div>
   );
 };
