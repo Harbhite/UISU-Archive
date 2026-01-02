@@ -2,6 +2,7 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
+ * Verified Vercel Deployment Fix
 */
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -1379,8 +1380,8 @@ const ShuttleGuide = () => (
     <div className="max-w-3xl mx-auto py-12">
         <h2 className="text-4xl font-serif text-ui-blue mb-12 italic">Logistics Guide</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-8 bg-white border border-slate-200"><div className="font-bold mb-2">GATE -> SUB</div><div className="text-nobel-gold font-serif">₦100</div></div>
-            <div className="p-8 bg-white border border-slate-200"><div className="font-bold mb-2">SUB -> UCH</div><div className="text-nobel-gold font-serif">₦200</div></div>
+            <div className="p-8 bg-white border border-slate-200"><div className="font-bold mb-2">GATE &rarr; SUB</div><div className="text-nobel-gold font-serif">₦100</div></div>
+            <div className="p-8 bg-white border border-slate-200"><div className="font-bold mb-2">SUB &rarr; UCH</div><div className="text-nobel-gold font-serif">₦200</div></div>
         </div>
     </div>
 );
