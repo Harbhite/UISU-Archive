@@ -19,12 +19,12 @@ import {
   ArrowRight, Filter, SortDesc, MousePointer2
 } from 'lucide-react';
 
-// Using esm.sh for Editor.js plugins in ESM environment
-import EditorJS from 'https://esm.sh/@editorjs/editorjs@2.30.7';
-import Header from 'https://esm.sh/@editorjs/header@2.8.7';
-import List from 'https://esm.sh/@editorjs/list@1.10.0';
-import Checklist from 'https://esm.sh/@editorjs/checklist@1.6.0';
-import QuoteBlock from 'https://esm.sh/@editorjs/quote@2.6.0';
+// Using local Editor.js packages
+import EditorJS from '@editorjs/editorjs';
+import Header from '@editorjs/header';
+import List from '@editorjs/list';
+import Checklist from '@editorjs/checklist';
+import QuoteBlock from '@editorjs/quote';
 
 interface ToolProps {
   onBack: () => void;
