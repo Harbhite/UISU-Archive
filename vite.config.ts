@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        allowedHosts: ['work-1-uszjniydseuwmppp.prod-runtime.all-hands.dev', 'work-2-uszjniydseuwmppp.prod-runtime.all-hands.dev'],
       },
       plugins: [react()],
       define: {
