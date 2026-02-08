@@ -17,7 +17,8 @@ import { CommunitiesPage, ClubDetailPage } from './components/Communities';
 import { TowerScene } from './components/QuantumScene';
 import { ToolsPage } from './components/Tools';
 import { OurPeoplePage } from './components/OurPeople';
-import { Menu, X, BookOpen, ArrowRight, Library, Star, MapPin, Scale, Megaphone, ChevronDown, Users, Mail, Check, Wrench, Quote, Award, ShieldCheck, Fingerprint } from 'lucide-react';
+import { ConstitutionPage } from './components/Constitution';
+import { Menu, X, BookOpen, ArrowRight, Library, Star, MapPin, Scale, Megaphone, ChevronDown, Users, Mail, Check, Wrench, Quote, Award, ShieldCheck, Fingerprint, Scroll } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 
 // --- SUB-COMPONENTS ---
@@ -137,7 +138,7 @@ const RevealHeader = ({ children, className }: { children?: React.ReactNode, cla
 );
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'home' | 'governance' | 'history' | 'documents' | 'announcements' | 'communities' | 'club-detail' | 'tools' | 'people'>('home');
+  const [view, setView] = useState<'home' | 'governance' | 'history' | 'documents' | 'announcements' | 'communities' | 'club-detail' | 'tools' | 'people' | 'constitution'>('home');
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedClubId, setSelectedClubId] = useState<string | null>(null);
   
@@ -182,6 +183,7 @@ const App: React.FC = () => {
   if (view === 'announcements') return <AnnouncementsPage onBack={() => setView('home')} />;
   if (view === 'tools') return <ToolsPage onBack={() => setView('home')} />;
   if (view === 'people') return <OurPeoplePage onBack={() => setView('home')} />;
+  if (view === 'constitution') return <ConstitutionPage onBack={() => setView('home')} />;
   if (view === 'communities') return <CommunitiesPage onBack={() => setView('home')} onClubSelect={(id) => { setSelectedClubId(id); setView('club-detail'); }} />;
   if (view === 'club-detail' && selectedClubId) return <ClubDetailPage clubId={selectedClubId} onBack={() => setView('communities')} />;
 
@@ -224,6 +226,7 @@ const App: React.FC = () => {
             <button onClick={() => {setMenuOpen(false); setView('tools')}} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">Uite Matrix</button>
             <a href="#history" onClick={scrollToSection('history')} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">History</a>
             <button onClick={() => {setMenuOpen(false); setView('governance')}} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">Governance</button>
+            <button onClick={() => {setMenuOpen(false); setView('constitution')}} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">Constitution</button>
             <button onClick={() => {setMenuOpen(false); setView('documents')}} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">Library</button>
             <button onClick={() => {setMenuOpen(false); setView('communities')}} className="text-xl font-serif text-ui-blue hover:text-nobel-gold transition-colors">Clubs & Societies</button>
         </motion.div>
@@ -248,9 +251,10 @@ const App: React.FC = () => {
                     <ParallaxCard index={0} progress={scrollYProgress} title="Our People" subtitle="Current Leadership" icon={Users} color="bg-ui-blue" onClick={() => setView('people')} />
                     <ParallaxCard index={1} progress={scrollYProgress} title="Uite Matrix" subtitle="Student Utility System" icon={Wrench} color="bg-zinc-900" onClick={() => setView('tools')} />
                     <ParallaxCard index={2} progress={scrollYProgress} title="Announcements" subtitle="News & Events" icon={Megaphone} color="bg-red-900" onClick={() => setView('announcements')} />
-                    <ParallaxCard index={3} progress={scrollYProgress} title="Union History" subtitle="1948 - Present" icon={BookOpen} color="bg-slate-800" onClick={() => scrollToSection('history')({preventDefault: () => {}} as any)} />
-                    <ParallaxCard index={4} progress={scrollYProgress} title="Communities" subtitle="Clubs & Societies" icon={Users} color="bg-emerald-800" onClick={() => setView('communities')} />
-                    <ParallaxCard index={5} progress={scrollYProgress} title="The Republics" subtitle="Halls of Residence" icon={MapPin} color="bg-ui-dark" onClick={() => scrollToSection('halls')({preventDefault: () => {}} as any)} />
+                    <ParallaxCard index={3} progress={scrollYProgress} title="Constitution" subtitle="Supreme Law" icon={Scroll} color="bg-amber-800" onClick={() => setView('constitution')} />
+                    <ParallaxCard index={4} progress={scrollYProgress} title="Union History" subtitle="1948 - Present" icon={BookOpen} color="bg-slate-800" onClick={() => scrollToSection('history')({preventDefault: () => {}} as any)} />
+                    <ParallaxCard index={5} progress={scrollYProgress} title="Communities" subtitle="Clubs & Societies" icon={Users} color="bg-emerald-800" onClick={() => setView('communities')} />
+                    <ParallaxCard index={6} progress={scrollYProgress} title="The Republics" subtitle="Halls of Residence" icon={MapPin} color="bg-ui-dark" onClick={() => scrollToSection('halls')({preventDefault: () => {}} as any)} />
                     <div className="flex-shrink-0 w-[10vw] hidden md:block"></div>
                 </div>
                 {/* Scroll Indicator */}
@@ -389,7 +393,10 @@ const App: React.FC = () => {
                         <RevealHeader className="font-serif text-5xl mb-6 text-ui-blue">Power Structure</RevealHeader>
                         <p className="text-xl text-slate-500 mb-6 leading-relaxed font-light italic">Checks, balances, and constitutional integrity.</p>
                         <p className="text-lg text-slate-400 leading-relaxed mb-8 font-light">The <strong>CEC</strong> executes, the <strong>SRC</strong> legislates, and the <strong>Judiciary</strong> interprets. A model republic within the ivory tower.</p>
-                        <button onClick={() => setView('governance')} className="flex items-center gap-2 text-nobel-gold font-bold uppercase tracking-wider text-xs hover:text-ui-blue transition-colors group">Read Legal Framework <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" /></button>
+                        <div className="flex flex-wrap gap-6">
+                            <button onClick={() => setView('governance')} className="flex items-center gap-2 text-nobel-gold font-bold uppercase tracking-wider text-xs hover:text-ui-blue transition-colors group">Read Legal Framework <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" /></button>
+                            <button onClick={() => setView('constitution')} className="flex items-center gap-2 text-ui-blue font-bold uppercase tracking-wider text-xs hover:text-nobel-gold transition-colors group"><Scroll size={14} /> View Constitution <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" /></button>
+                        </div>
                      </div>
                 </div>
             </div>
