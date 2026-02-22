@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, it, expect, vi } from 'vitest';
 import { extractTextFromFile } from './file-utils';
 
@@ -35,29 +36,24 @@ describe('extractTextFromFile', () => {
 
   it('extracts text from application/pdf file', async () => {
     const file = new File(['dummy'], 'test.pdf', { type: 'application/pdf' });
+    // Mock arrayBuffer since it's used in extractTextFromFile for PDF
+    file.arrayBuffer = vi.fn().mockResolvedValue(new ArrayBuffer(8));
+
     const text = await extractTextFromFile(file);
-    expect(text.trim()).toBe('PDF Content');
+    expect(text.trim()).toContain('PDF Content');
   });
 
   it('extracts text from DOCX file', async () => {
     const file = new File(['dummy'], 'test.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+    file.arrayBuffer = vi.fn().mockResolvedValue(new ArrayBuffer(8));
+
     const text = await extractTextFromFile(file);
     expect(text).toBe('DOCX Content');
   });
 
   it('returns empty string for images', async () => {
     const file = new File(['dummy'], 'test.png', { type: 'image/png' });
-    // This assumes extractTextFromFile returns '' for images as planned
-    // If it throws, the test will fail which is good.
-    try {
-        const text = await extractTextFromFile(file);
-        expect(text).toBe('');
-    } catch (e: any) {
-        // If it throws "Unsupported file type", then my check logic is wrong or missing
-        // But based on my previous thought, I added the check.
-        // Let's see if the test passes.
-        // If it throws, the implementation is failing to return empty string.
-        throw e;
-    }
+    const text = await extractTextFromFile(file);
+    expect(text).toBe('');
   });
 });

@@ -12,6 +12,18 @@ import {
   Calendar, Layers, ClipboardList, CheckCircle2,
 } from 'lucide-react';
 import { GoogleGenAI, Type } from "@google/genai";
+
+const downloadTextFile = (content: string, filename: string) => {
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
 import { extractTextFromFile } from '../lib/file-utils';
 
 interface StudyBuddyProps {
@@ -288,6 +300,14 @@ export const StudyBuddyPage: React.FC<StudyBuddyProps> = ({ onBack }) => {
     };
 
     const resetMatrix = () => {
+    const exportResults = () => {
+        const content = blocks.map(b => {
+            if (b.type === "flashcard") return `Q: ${b.content.q}\nA: ${b.content.a}\n`;
+            return `[${b.type.toUpperCase()}: ${b.title}]\n${typeof b.content === "string" ? b.content : JSON.stringify(b.content)}\n`;
+        }).join("\n-------------------\n");
+        const timestamp = new Date().toISOString().split("T")[0];
+        downloadTextFile(content, `UISU_StudyBuddy_Export_${timestamp}.txt`);
+    };
         setStep('input');
         setBlocks([]);
         setInputText("");
@@ -538,7 +558,7 @@ export const StudyBuddyPage: React.FC<StudyBuddyProps> = ({ onBack }) => {
                         <p className="text-sm text-slate-500 leading-relaxed font-light">
                             Use the <strong>Synthesis Output</strong> to construct your own pedagogical map. For math problems, verify against the <strong>Archival Result</strong> before committing to memory.
                         </p>
-                        <button className="w-full py-4 bg-slate-50 border border-slate-100 hover:border-ui-blue transition-all text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-ui-blue flex items-center justify-center gap-2" aria-label="Export technical brief">
+                        <button className="w-full py-4 bg-slate-50 border border-slate-100 hover:border-ui-blue transition-all text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-ui-blue flex items-center justify-center gap-2" onClick={exportResults} aria-label="Export technical brief">
                             <Download size={14} /> Export Academic Slip
                         </button>
                     </div>
