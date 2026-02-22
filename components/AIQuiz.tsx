@@ -12,6 +12,7 @@ import {
   Sliders, Trash2, File as FileIcon, BarChart3
 } from 'lucide-react';
 import { GoogleGenAI, Type } from "@google/genai";
+import { extractTextFromFile } from '../lib/file-utils';
 
 interface AIQuizProps {
   onBack: () => void;
@@ -32,6 +33,8 @@ export const AIQuizPage: React.FC<AIQuizProps> = ({ onBack }) => {
     const [inputText, setInputText] = useState("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [fileData, setFileData] = useState<{data: string, mimeType: string} | null>(null);
+    const [fileText, setFileText] = useState<string>("");
+    const [isExtracting, setIsExtracting] = useState(false);
     const [questions, setQuestions] = useState<Question[]>([]);
     const [currentIdx, setCurrentIdx] = useState(0);
     const [userAnswers, setUserAnswers] = useState<number[]>([]);
@@ -41,11 +44,13 @@ export const AIQuizPage: React.FC<AIQuizProps> = ({ onBack }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     // --- FILE HANDLING ---
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
         setSelectedFile(file);
+        setFileData(null);
+        setFileText("");
         
         if (file.type.startsWith('image/')) {
             const reader = new FileReader();
@@ -55,13 +60,24 @@ export const AIQuizPage: React.FC<AIQuizProps> = ({ onBack }) => {
             };
             reader.readAsDataURL(file);
         } else {
-            setFileData(null); // Clear fileData if not an image (Gemini only supports image inlineData)
+            setIsExtracting(true);
+            try {
+                const text = await extractTextFromFile(file);
+                setFileText(text);
+            } catch (error) {
+                console.error("Text extraction failed", error);
+                alert("Failed to read file content. Please try another file.");
+                removeFile();
+            } finally {
+                setIsExtracting(false);
+            }
         }
     };
 
     const removeFile = () => {
         setSelectedFile(null);
         setFileData(null);
+        setFileText("");
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
@@ -69,6 +85,10 @@ export const AIQuizPage: React.FC<AIQuizProps> = ({ onBack }) => {
     const generateQuiz = async () => {
         if (!inputText && !selectedFile) {
             alert("Please provide some study material (text or file) to generate the quiz.");
+            return;
+        }
+        if (isExtracting) {
+            alert("Please wait for file analysis to complete.");
             return;
         }
 
@@ -91,6 +111,8 @@ export const AIQuizPage: React.FC<AIQuizProps> = ({ onBack }) => {
                 LEVEL OF RIGIDITY: ${rigidity}
                 INSTRUCTION: ${rigidityPrompt}
 
+                IMPORTANT: You MUST generate exactly 25 questions.
+
                 FORMAT:
                 Return ONLY a JSON array of objects. Each object MUST have:
                 - question (string)
@@ -102,27 +124,26 @@ export const AIQuizPage: React.FC<AIQuizProps> = ({ onBack }) => {
 
             promptParts.push({ text: mainInstruction });
             
-            if (inputText) {
-                promptParts.push({ text: `TEXTUAL MATERIAL:\n${inputText}` });
+            let combinedInput = "";
+            if (inputText) combinedInput += `TEXTUAL MATERIAL:\n${inputText}\n\n`;
+            if (fileText) combinedInput += `FILE CONTENT (${selectedFile?.name}):\n${fileText}\n\n`;
+
+            if (combinedInput) {
+                promptParts.push({ text: combinedInput });
             }
 
-            if (selectedFile) {
-                if (fileData) { // Only send inlineData for images
-                    promptParts.push({
-                        inlineData: {
-                            data: fileData.data,
-                            mimeType: fileData.mimeType
-                        }
-                    });
-                    promptParts.push({ text: `Analyze the attached image: ${selectedFile.name} for quiz content.` });
-                } else {
-                    // For non-image files, we can only mention it if not providing raw data.
-                    promptParts.push({ text: `[SYSTEM_NOTE: User has attached a file: ${selectedFile.name}. Analyze context if provided in text, otherwise focus on existing text input.]` });
-                }
+            if (selectedFile && fileData) { // Only send inlineData for images
+                promptParts.push({
+                    inlineData: {
+                        data: fileData.data,
+                        mimeType: fileData.mimeType
+                    }
+                });
+                promptParts.push({ text: `Analyze the attached image: ${selectedFile.name} for quiz content.` });
             }
 
             const response = await ai.models.generateContent({
-                model: 'gemini-3-flash-preview', // Using a flash model for quicker response for quizzes
+                model: 'gemini-2.0-flash', // Using flash model for speed
                 contents: { parts: promptParts },
                 config: {
                     responseMimeType: "application/json",
@@ -164,7 +185,7 @@ export const AIQuizPage: React.FC<AIQuizProps> = ({ onBack }) => {
                 throw new Error(`Invalid protocol response format from AI: ${jsonError.message}. Please try again or refine input. Raw: ${responseText.substring(0, 200)}...`);
             }
             
-            setQuestions(data.slice(0, 25)); // Ensure exactly 25 questions if more were generated, or fewer if less.
+            setQuestions(data); // Don't slice, assume AI respected the prompt or use what we got.
             setStep('quiz');
             startTimer();
             
@@ -216,6 +237,7 @@ export const AIQuizPage: React.FC<AIQuizProps> = ({ onBack }) => {
         setInputText("");
         setFileData(null);
         setSelectedFile(null);
+        setFileText("");
         setCurrentIdx(0);
         stopTimer();
         setTimeElapsed(0);
@@ -276,6 +298,8 @@ export const AIQuizPage: React.FC<AIQuizProps> = ({ onBack }) => {
                                         <div className="overflow-hidden">
                                             <div className="text-[10px] font-bold uppercase tracking-widest">Attached Material</div>
                                             <div className="text-[10px] font-mono truncate">{selectedFile.name}</div>
+                                            {isExtracting && <div className="text-[10px] text-nobel-gold animate-pulse mt-1">Extracting...</div>}
+                                            {fileText && !isExtracting && <div className="text-[10px] text-green-400 mt-1">Ready</div>}
                                         </div>
                                     </div>
                                     <button onClick={removeFile} className="p-2 hover:bg-red-500 transition-colors text-white/50 hover:text-white" aria-label="Remove attached file">
@@ -321,11 +345,11 @@ export const AIQuizPage: React.FC<AIQuizProps> = ({ onBack }) => {
 
                     <button 
                         onClick={generateQuiz}
-                        disabled={!inputText && !selectedFile}
+                        disabled={(!inputText && !selectedFile) || isExtracting}
                         className="w-full py-6 md:py-8 bg-nobel-gold text-ui-blue font-bold uppercase tracking-[0.3em] text-[10px] md:text-sm shadow-2xl hover:bg-white border border-nobel-gold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                         aria-label="Initialize quiz generation protocol"
                     >
-                        Initialize Protocol <ChevronRight size={18} />
+                        {isExtracting ? <Loader2 className="animate-spin" size={18} /> : <>Initialize Protocol <ChevronRight size={18} /></>}
                     </button>
                 </div>
             </div>
