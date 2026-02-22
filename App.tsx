@@ -180,32 +180,33 @@ const App: React.FC = () => {
         <AnimatePresence>
             {view === 'home' && (
                 <motion.nav 
-                    initial={{ y: 0 }}
-                    animate={{ y: navVisible ? 0 : -150 }}
-                    className={`fixed top-14 left-1/2 -translate-x-1/2 w-[90%] max-w-6xl z-[100] transition-all duration-500 ${scrolled ? 'translate-y-[-10px]' : ''}`}
+                    initial={{ y: -100 }}
+                    animate={{ y: navVisible ? 20 : -100 }}
+                    className="fixed top-0 left-1/2 -translate-x-1/2 z-[100]"
                 >
-                    <div className={`bg-ui-blue/70 backdrop-blur-xl text-white px-6 py-4 flex justify-between items-center border border-white/10 transition-all duration-500 rounded-full ${scrolled ? 'shadow-[0_20px_40px_-15px_rgba(0,0,0,0.7)]' : 'shadow-2xl'}`}>
+                    <div className="flex items-center gap-6 bg-slate-900/80 backdrop-blur-md px-6 py-3 rounded-full border border-white/10 shadow-2xl text-white">
+
                         <motion.button 
                             whileHover={{ scale: 1.05 }} 
                             whileTap={{ scale: 0.95 }} 
                             onClick={() => setMenuOpen(!menuOpen)} 
-                            className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] hover:text-nobel-gold transition-colors ml-0"
+                            className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] hover:text-nobel-gold transition-colors"
                         >
-                            <AnimatePresence mode="wait">
-                                {menuOpen ? <motion.div key="c" initial={{ rotate: -90 }} animate={{ rotate: 0 }} exit={{ rotate: 90 }}><X size={18}/></motion.div> : <motion.div key="m" initial={{ rotate: 90 }} animate={{ rotate: 0 }} exit={{ rotate: -90 }}><Menu size={18}/></motion.div>}
-                            </AnimatePresence>
-                            <span className="hidden md:inline">Menu</span>
+                            <Menu size={18} />
+                            <span>Menu</span>
                         </motion.button>
 
-                        <motion.div whileHover={{ scale: 1.1 }} onClick={() => setView('home')} className="absolute left-1/2 -translate-x-1/2 flex items-center gap-3 cursor-pointer">
-                            <div className="w-10 h-10 bg-nobel-gold flex items-center justify-center text-ui-blue shadow-lg font-serif font-bold italic text-xl">U</div>
-                            <span className="font-serif font-bold text-2xl tracking-tighter hidden md:inline">UISU</span>
+                        <div className="h-6 w-px bg-white/20"></div>
+
+                        <motion.div whileHover={{ scale: 1.1 }} onClick={() => setView('home')} className="flex items-center gap-3 cursor-pointer">
+                            <div className="w-8 h-8 bg-nobel-gold flex items-center justify-center text-ui-blue shadow-lg font-serif font-bold italic text-lg rounded-sm">U</div>
                         </motion.div>
 
+                        <div className="h-6 w-px bg-white/20"></div>
+
                         <div className="flex items-center gap-6">
-                            <button onClick={() => setView('ai-explainer')} className="hidden lg:flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] hover:text-nobel-gold transition-colors"><Sparkles size={14} /> StudyBuddy</button>
-                            <button onClick={() => setView('ai-quiz')} className="hidden lg:flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] hover:text-nobel-gold transition-colors"><BrainCircuit size={14} /> Quiz</button>
-                            <button onClick={() => setView('home')} className="bg-nobel-gold text-ui-blue px-6 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-all border border-nobel-gold rounded-full">Access</button>
+                            <button onClick={() => setView('ai-explainer')} className="hidden md:flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] hover:text-nobel-gold transition-colors"><Sparkles size={14} /> Study</button>
+                            <button onClick={() => setView('ai-quiz')} className="hidden md:flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] hover:text-nobel-gold transition-colors"><BrainCircuit size={14} /> Quiz</button>
                         </div>
                     </div>
                 </motion.nav>
@@ -216,44 +217,55 @@ const App: React.FC = () => {
         <AnimatePresence>
             {menuOpen && (
                 <motion.div 
-                    initial={{ opacity: 0, x: -50 }} 
-                    animate={{ opacity: 1, x: 0 }} 
-                    exit={{ opacity: 0, x: -50 }} 
-                    className="fixed top-0 left-0 w-full md:w-[400px] h-full bg-ui-blue shadow-[50px_0_100px_-20px_rgba(0,0,0,0.5)] z-[120] p-12 flex flex-col justify-center gap-8 border-r border-white/5"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 bg-slate-950/98 backdrop-blur-3xl z-[150] flex items-center justify-center p-6 md:p-20"
                 >
-                    <button onClick={() => setMenuOpen(false)} className="absolute top-10 right-10 text-white/50 hover:text-nobel-gold transition-colors">
-                        <X size={32} />
+                    <button onClick={() => setMenuOpen(false)} className="absolute top-8 right-8 md:top-12 md:right-12 p-4 rounded-full bg-white/5 hover:bg-white/10 text-white transition-all group border border-white/5 hover:border-nobel-gold/50">
+                        <X size={24} className="group-hover:rotate-90 transition-transform duration-500" />
                     </button>
-                    
-                    <div className="text-[10px] font-bold text-nobel-gold uppercase tracking-[0.4em] mb-4">Institutional Protocol v4</div>
-                    
-                    <nav className="flex flex-col gap-6">
-                        {[
-                            { id: 'home', label: 'Archival Home', icon: Star },
-                            { id: 'ai-explainer', label: 'StudyBuddy Matrix', icon: Sparkles },
-                            { id: 'ai-quiz', label: 'AI Quiz Matrix', icon: BrainCircuit },
-                            { id: 'constitution', label: 'Union Constitution', icon: Scale },
-                            { id: 'people', label: 'Executive Registry', icon: Users },
-                            { id: 'halls', label: 'The Hall Nations', icon: Building2 },
-                            { id: 'tools', label: 'Uite Matrix (GPA)', icon: Wrench },
-                            { id: 'announcements', label: 'Official Dispatch', icon: Mail },
-                            { id: 'governance', label: 'Constitutional Map', icon: ShieldCheck },
-                            { id: 'documents', label: 'Document Library', icon: BookOpen },
-                            { id: 'style-guide', label: 'Style Protocol', icon: Palette }
-                        ].map((v) => (
-                            <button 
-                                key={v.id} 
-                                onClick={() => {setMenuOpen(false); setView(v.id as any)}} 
-                                className={`group flex items-center gap-4 text-2xl font-serif transition-all hover:pl-4 text-left ${view === v.id ? 'text-nobel-gold' : 'text-white/70 hover:text-white'}`}
-                            >
-                                <v.icon size={20} className={view === v.id ? 'text-nobel-gold' : 'text-white/20 group-hover:text-nobel-gold transition-colors'} />
-                                {v.label}
-                            </button>
-                        ))}
-                    </nav>
 
-                    <div className="mt-auto pt-12 border-t border-white/5 text-[9px] font-bold uppercase tracking-widest text-white/20">
-                        EST. 1948 • UNIVERSITY OF IBADAN
+                    <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-24">
+                        <div className="hidden md:flex md:col-span-5 flex-col justify-center border-r border-white/5 pr-12 py-12 relative">
+                            <div className="absolute top-0 left-0 w-20 h-1 bg-nobel-gold"></div>
+                            <div>
+                                <div className="text-nobel-gold text-xs font-bold uppercase tracking-[0.6em] mb-6">The Registry</div>
+                                <h2 className="text-5xl lg:text-7xl font-serif text-white mb-8 italic leading-[0.9]">Union <br/> <span className="text-slate-500">Legacy</span></h2>
+                                <p className="text-slate-400 max-w-sm leading-relaxed text-lg font-light">Navigating the intellectual and cultural heritage of the First and Best.</p>
+                            </div>
+                            <div className="mt-24 flex gap-4">
+                                <div className="p-4 rounded-full bg-white/5 border border-white/5"><Star size={20} className="text-nobel-gold" /></div>
+                                <div className="p-4 rounded-full bg-white/5 border border-white/5"><Scale size={20} className="text-slate-400" /></div>
+                                <div className="p-4 rounded-full bg-white/5 border border-white/5"><Building2 size={20} className="text-slate-400" /></div>
+                            </div>
+                        </div>
+
+                        <nav className="md:col-span-7 flex flex-col justify-center gap-2">
+                            {[
+                               { id: 'home', label: 'Archival Home', icon: Star },
+                               { id: 'ai-explainer', label: 'StudyBuddy Matrix', icon: Sparkles },
+                               { id: 'ai-quiz', label: 'AI Quiz Matrix', icon: BrainCircuit },
+                               { id: 'tools', label: 'Uite Matrix', icon: Wrench },
+                               { id: 'people', label: 'Executive Registry', icon: Users },
+                               { id: 'halls', label: 'The Hall Republics', icon: Building2 },
+                               { id: 'announcements', label: 'Official Dispatch', icon: Mail },
+                               { id: 'constitution', label: 'Union Constitution', icon: Scale },
+                            ].map((v, i) => (
+                                <motion.button
+                                    key={v.id}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: i * 0.05 + 0.2 }}
+                                    onClick={() => {setMenuOpen(false); setView(v.id as any)}}
+                                    className={`group flex items-center gap-6 p-4 rounded-xl transition-all hover:bg-white/5 text-left w-full`}
+                                >
+                                    <span className={`text-2xl md:text-4xl font-serif ${view === v.id ? 'text-nobel-gold italic' : 'text-slate-400 group-hover:text-white group-hover:italic'} transition-all duration-300`}>{v.label}</span>
+                                    <div className="h-px bg-white/10 flex-1 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
+                                    <v.icon size={20} className={`opacity-0 group-hover:opacity-100 text-nobel-gold transition-all duration-300 -translate-x-4 group-hover:translate-x-0`} />
+                                </motion.button>
+                            ))}
+                        </nav>
                     </div>
                 </motion.div>
             )}

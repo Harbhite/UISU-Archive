@@ -14,6 +14,18 @@ import {
 import { GoogleGenAI, Type } from "@google/genai";
 import { extractTextFromFile } from '../lib/file-utils';
 
+const downloadTextFile = (content: string, filename: string) => {
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
 interface AIQuizProps {
   onBack: () => void;
 }
@@ -229,6 +241,12 @@ export const AIQuizPage: React.FC<AIQuizProps> = ({ onBack }) => {
     };
 
     const score = userAnswers.reduce((acc, val, i) => (val === questions[i]?.correctIndex ? acc + 1 : acc), 0);
+
+    const exportResults = () => {
+        const content = `UISU AI Quiz - Score: ${Math.round((score / questions.length) * 100)}%\nTime: ${formatTime(timeElapsed)}\n\n` + questions.map((q, i) => `Q${i+1}: ${q.question}\nYour Answer: ${q.options[userAnswers[i]] || "None"} (${userAnswers[i] === q.correctIndex ? "Correct" : "Incorrect"})\nCorrect Answer: ${q.options[q.correctIndex]}\nExplanation: ${q.explanation}\n`).join("\n-------------------\n");
+        const timestamp = new Date().toISOString().split("T")[0];
+        downloadTextFile(content, `UISU_AI_Quiz_Export_${timestamp}.txt`);
+    };
 
     const resetQuiz = () => {
         setStep('upload');
@@ -506,7 +524,7 @@ export const AIQuizPage: React.FC<AIQuizProps> = ({ onBack }) => {
                         </div>
 
                         <div className="flex flex-col gap-3">
-                            <button className="w-full py-5 bg-nobel-gold text-ui-blue font-bold uppercase text-[9px] md:text-[10px] tracking-[0.3em] flex items-center justify-center gap-3 hover:bg-white border border-nobel-gold transition-all shadow-xl" aria-label="Export official quiz slip">
+                            <button className="w-full py-5 bg-nobel-gold text-ui-blue font-bold uppercase text-[9px] md:text-[10px] tracking-[0.3em] flex items-center justify-center gap-3 hover:bg-white border border-nobel-gold transition-all shadow-xl" onClick={exportResults} aria-label="Export official quiz slip">
                                 <Download size={16} /> Export Official Slip
                             </button>
                             <button 
