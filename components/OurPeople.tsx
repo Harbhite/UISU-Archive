@@ -1,4 +1,3 @@
-
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -75,16 +74,7 @@ export const OurPeoplePage: React.FC<OurPeopleProps> = ({ onBack }) => {
     return (
         <div className="min-h-screen bg-slate-50 pt-32 pb-24 relative overflow-x-hidden">
             <div className="container mx-auto px-6">
-                {/* Back Navigation */}
-                <button 
-                    onClick={onBack}
-                    className="group flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] hover:text-nobel-gold transition-colors mb-12"
-                >
-                    <div className="p-2 rounded-full border border-slate-300 group-hover:border-nobel-gold transition-colors">
-                        <ArrowLeft size={14} />
-                    </div>
-                    <span>Back to Home</span>
-                </button>
+                {/* Removed Back Navigation */}
 
                 {/* Hero */}
                 <div className="mb-20">

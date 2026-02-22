@@ -1,4 +1,3 @@
-
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -85,15 +84,7 @@ export const AnnouncementsPage: React.FC<AnnouncementsProps> = ({ onBack }) => {
             <div className="container mx-auto px-6">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
-                    <button 
-                        onClick={onBack}
-                        className="group flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-ui-blue transition-colors mb-6 md:mb-0"
-                    >
-                        <div className="p-2 rounded-full border border-slate-300 group-hover:border-ui-blue transition-colors">
-                            <ArrowLeft size={14} />
-                        </div>
-                        <span>Back to Home</span>
-                    </button>
+                    {/* Removed Back Navigation */}
 
                     <div className="text-right hidden md:block">
                         <div className="text-xs font-bold uppercase tracking-widest text-nobel-gold mb-1">Union Dispatch</div>
